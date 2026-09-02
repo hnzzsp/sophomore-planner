@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大二上动态规划表 · 课程×周计划并线</title>
+<style>
+:root{
+  --bg:#f5f6f8; --bg2:#ffffff; --ink:#1f2329; --muted:#646a73; --rule:#e8e9ed;
+  --accent:#3370ff; --accent2:#15c2a6;
+  --d1:#5b6cff; --d2:#15c2a6; --d3:#9b5de5; --d4:#f5a623; --d5:#ef5b5b; --d6:#ec4899;
+  --p1:#5b6cff; --p2:#15c2a6; --p3:#9b5de5; --p4:#f5a623;
+  --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --font-mono:"SF Mono",Consolas,"Courier New",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);font-size:15px;line-height:1.65}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px 70px}
+
+/* ===== 顶栏 ===== */
+.topbar{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+.tb-in{max-width:1080px;margin:0 auto;padding:9px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.tb-title{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.tb-week{font-size:12px;font-weight:700;color:#fff;background:var(--accent);border-radius:6px;padding:3px 10px;white-space:nowrap}
+.tb-prog{font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--accent)}
+.tb-bar{width:110px;height:6px;background:var(--rule);border-radius:3px;overflow:hidden}
+.tb-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .4s ease}
+.tb-reset{font-size:12px;color:var(--muted);border:1px solid var(--rule);background:transparent;border-radius:6px;padding:3px 10px;cursor:pointer}
+.tb-reset:hover{color:var(--ink);border-color:var(--muted)}
+
+/* ===== Tabs ===== */
+.tabs{max-width:1080px;margin:14px auto 0;padding:0 20px;display:flex;gap:8px;flex-wrap:wrap}
+.tabs button{font-family:inherit;font-size:14px;font-weight:600;color:var(--muted);background:var(--bg2);border:1px solid var(--rule);border-radius:9px;padding:8px 18px;cursor:pointer;transition:all .15s}
+.tabs button:hover{color:var(--ink);border-color:#c9cfdb}
+.tabs button.active{color:#fff;background:var(--ink);border-color:var(--ink)}
+.tabs button .bdg{font-family:var(--font-mono);font-size:11px;opacity:.75;margin-left:4px}
+
+/* ===== Hero ===== */
+.hero{padding:30px 0 6px}
+.hero h1{font-size:27px;font-weight:800;letter-spacing:-.02em}
+.hero .sub{margin-top:6px;color:var(--muted);font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{font-size:12.5px;font-weight:600;color:var(--ink);background:var(--bg2);border:1px solid var(--rule);border-radius:999px;padding:4px 12px}
+.chip b{color:var(--accent)}
+.now-banner{margin-top:16px;background:var(--bg2);border:1px solid var(--rule);border-left:4px solid var(--accent);border-radius:9px;padding:13px 17px;font-size:14px}
+.now-banner b{color:var(--accent)}
+
+h2.sec{font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin:32px 0 13px;display:flex;align-items:center;gap:10px}
+h2.sec::after{content:"";flex:1;height:1px;background:var(--rule)}
+
+/* ===== 学期地图 ===== */
+.phase-legend{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+.pl-card{background:var(--bg2);border:1px solid var(--rule);border-top:3px solid var(--pc);border-radius:10px;padding:11px 13px}
+.pl-card b{font-size:13.5px;display:flex;align-items:center;gap:7px}
+.pl-card b i{font-style:normal;font-family:var(--font-mono);font-size:11px;color:#fff;background:var(--pc);border-radius:4px;padding:1px 6px}
+.pl-card span{font-size:12px;color:var(--muted);display:block;margin-top:2px}
+.wgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.wk{background:var(--bg2);border:1px solid var(--rule);border-top:3px solid var(--pc);border-radius:10px;padding:12px 13px;position:relative;transition:box-shadow .15s}
+.wk:hover{box-shadow:0 2px 10px rgba(31,35,41,.08)}
+.wk.cur{box-shadow:0 0 0 2.5px var(--accent)}
+.wk.past{opacity:.62}
+.wk-head{display:flex;align-items:baseline;justify-content:space-between;gap:6px;margin-bottom:8px}
+.wk-head b{font-family:var(--font-mono);font-size:15px}
+.wk-head span{font-family:var(--font-mono);font-size:10.5px;color:var(--muted)}
+.wk-rows{display:flex;flex-direction:column;gap:3.5px}
+.wk-row{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);line-height:1.35}
+.wk-row i{width:8px;height:8px;border-radius:2.5px;flex:none}
+.wk-row b{color:var(--ink);font-weight:600;font-size:12px}
+.ms-chip{position:absolute;top:-9px;right:9px;font-size:10px;font-weight:800;color:#fff;background:var(--d5);border-radius:5px;padding:1px 7px;letter-spacing:.03em}
+.cur-chip{position:absolute;top:-9px;left:9px;font-size:10px;font-weight:800;color:#fff;background:var(--accent);border-radius:5px;padding:1px 7px}
+.mile-strip{background:var(--bg2);border:1px solid var(--rule);border-radius:10px;padding:15px 18px;margin-top:16px;font-size:13.5px}
+.mile-strip b{color:var(--d5)}
+.mile-strip .mi{display:inline-block;font-family:var(--font-mono);font-size:11.5px;font-weight:700;border:1px solid var(--rule);border-radius:5px;padding:1px 7px;margin-right:6px;color:var(--muted)}
+
+/* ===== 本周执行 ===== */
+.wk-banner{background:var(--bg2);border:1px solid var(--rule);border-left:4px solid var(--accent2);border-radius:9px;padding:13px 17px;font-size:14px;margin-bottom:4px}
+.wk-banner b{color:var(--accent2)}
+.dimcard{background:var(--bg2);border:1px solid var(--rule);border-left:4px solid var(--dc,var(--accent));border-radius:10px;padding:13px 16px;margin:10px 0}
+.dimcard h4{font-size:14.5px;font-weight:700;display:flex;align-items:center;gap:8px}
+.dimcard h4 .dc{font-size:11px;font-weight:700;color:#fff;background:var(--dc);border-radius:4px;padding:1.5px 7px}
+.dimcard p{font-size:13px;color:var(--muted);margin-top:5px}
+.dimcard .dy-out{font-size:12.5px;margin-top:7px;background:color-mix(in srgb,var(--dc) 7%,var(--bg2));border:1px solid color-mix(in srgb,var(--dc) 25%,var(--rule));border-radius:6px;padding:6px 10px}
+.dimcard .dy-out b{color:var(--dc)}
+.rhythm{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin:12px 0}
+.rh{background:var(--bg2);border:1px solid var(--rule);border-radius:8px;padding:9px 8px;font-size:11.5px;text-align:center}
+.rh b{display:block;font-size:12px}
+.rh span{color:var(--muted);display:block;margin-top:2px}
+.rh.wknd{border-color:color-mix(in srgb,var(--accent) 35%,var(--rule));background:color-mix(in srgb,var(--accent) 5%,var(--bg2))}
+
+/* 日卡（沿用周清单样式） */
+.day{background:var(--bg2);border:1px solid var(--rule);border-radius:14px;margin:20px 0;overflow:hidden;--dc:var(--accent)}
+.day-head{display:flex;align-items:center;gap:16px;padding:15px 20px;border-bottom:1px solid var(--rule);background:linear-gradient(180deg,var(--bg),transparent)}
+.dd-date{display:flex;flex-direction:column;align-items:center;justify-content:center;width:56px;height:56px;border-radius:12px;flex-shrink:0;color:#fff;background:var(--dc)}
+.dd-date b{font-family:var(--font-mono);font-size:21px;font-weight:700;line-height:1}
+.dd-date span{font-size:10px;margin-top:3px;opacity:.9}
+.dd-main{flex:1;min-width:0}
+.dd-main h3{font-size:16.5px;font-weight:700;letter-spacing:-.01em}
+.dd-main .dd-sub{font-size:12.5px;color:var(--muted);margin-top:3px}
+.dd-meta{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
+.dur{font-family:var(--font-mono);font-size:12px;font-weight:600;color:var(--ink);background:var(--bg);border:1px solid var(--rule);border-radius:6px;padding:3px 8px}
+.day-count{font-family:var(--font-mono);font-size:12px;color:var(--muted)}
+.day.all-done .dd-date{background:var(--accent2)}
+.day.all-done .day-count::after{content:" ✓";color:var(--accent2);font-weight:700}
+.day.today{box-shadow:0 0 0 2.5px var(--accent)}
+.today-chip{display:inline-block;font-size:11px;font-weight:700;color:#fff;background:var(--accent);border-radius:5px;padding:1px 7px;vertical-align:2px;margin-right:6px}
+.tasks{list-style:none;padding:10px 20px 14px}
+.tasks li{position:relative;display:flex;gap:12px;padding:11px 6px;border-bottom:1px dashed var(--rule);cursor:pointer;border-radius:6px;transition:background .15s}
+.tasks li:last-child{border-bottom:none}
+.tasks li:hover{background:var(--bg)}
+.tasks input[type=checkbox]{position:absolute;opacity:0;pointer-events:none}
+.cb{width:20px;height:20px;border:2px solid var(--rule);border-radius:6px;flex-shrink:0;margin-top:2px;position:relative;transition:all .18s;background:var(--bg2)}
+.tasks li.done .cb{background:var(--dc);border-color:var(--dc)}
+.tasks li.done .cb::after{content:"";position:absolute;left:5.5px;top:1.5px;width:5px;height:10px;border:solid #fff;border-width:0 2.2px 2.2px 0;transform:rotate(45deg)}
+.tt{flex:1;min-width:0}
+.tt b{display:block;font-size:14.5px;font-weight:600}
+.tasks li.done .tt b{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--rule)}
+.tt em{display:block;font-style:normal;font-size:13px;color:var(--muted);margin-top:3px}
+.tt em .km{font-family:var(--font-mono);font-size:12px;color:var(--ink);background:var(--bg);border:1px solid var(--rule);border-radius:4px;padding:1px 5px}
+.out,.pit,.tut{margin:0 20px 12px;border-radius:8px;padding:11px 14px;font-size:13px}
+.out{background:color-mix(in srgb,var(--dc) 8%,var(--bg2));border:1px solid color-mix(in srgb,var(--dc) 30%,var(--rule))}
+.out b{color:var(--dc)}
+.pit{background:color-mix(in srgb,var(--d5) 6%,var(--bg2));border:1px solid color-mix(in srgb,var(--d5) 25%,var(--rule))}
+.pit b{color:var(--d5)}
+.tut{background:var(--bg);border:1px dashed var(--rule);color:var(--muted)}
+.tut a{color:var(--accent);text-decoration:none}
+.tut a:hover{text-decoration:underline}
+mark.key{background:none;color:var(--accent);font-weight:600}
+.out-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.out-cell{background:var(--bg2);border:1px solid var(--rule);border-radius:10px;padding:13px 12px;display:flex;flex-direction:column;gap:5px}
+.out-cell .no{font-family:var(--font-mono);font-size:11px;font-weight:700}
+.out-cell .nm{font-size:13px;font-weight:600;line-height:1.45}
+.out-cell .due{font-size:11.5px;color:var(--muted)}
+
+/* 复盘 */
+.review{background:var(--bg2);border:1px solid var(--rule);border-radius:12px;padding:19px 21px;margin:20px 0}
+.review h3{font-size:15.5px;font-weight:700;margin-bottom:10px}
+.review ol{padding-left:20px}
+.review li{margin:8px 0}
+.review textarea{display:block;width:100%;margin-top:8px;min-height:48px;border:1px solid var(--rule);border-radius:8px;padding:8px 10px;font-family:var(--font-sans);font-size:13px;color:var(--ink);resize:vertical;background:var(--bg)}
+.review textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+
+/* ===== 课程并线 ===== */
+table{width:100%;border-collapse:collapse;background:var(--bg2);border:1px solid var(--rule);border-radius:10px;overflow:hidden;font-size:13.5px;margin:14px 0}
+th{text-align:left;font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.05em;padding:10px 14px;border-bottom:1px solid var(--rule);background:var(--bg)}
+td{padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbfd}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:20px;white-space:nowrap}
+.tag.a{background:#e5f9f1;color:#0d7a55}
+.tag.b{background:#fff4e0;color:#9c5c00}
+.tag.c{background:#eef1f7;color:#5c6478}
+.dimchip{display:inline-block;font-size:11px;font-weight:700;padding:1.5px 7px;border-radius:5px;color:#fff;margin:1px 2px 1px 0;white-space:nowrap}
+.week-ref{font-size:12px;color:var(--muted)}
+td .main{font-weight:600}
+.merge{background:var(--bg2);border:1px solid var(--rule);border-radius:12px;padding:18px 20px;margin:14px 0}
+.merge .mh{display:flex;align-items:baseline;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.merge .mh .seg{font-size:14.5px;font-weight:800}
+.merge .mh .seg-sub{font-size:12.5px;color:var(--muted)}
+.merge-row{display:grid;grid-template-columns:1fr 28px 1fr 28px 1fr;gap:7px;align-items:stretch;margin-bottom:9px}
+.merge-box{background:#fafbfd;border:1px solid var(--rule);border-radius:8px;padding:9px 12px;font-size:13px}
+.merge-box .mt{font-size:10.5px;font-weight:800;letter-spacing:.07em;margin-bottom:3px;color:var(--muted)}
+.merge-box.course .mt{color:var(--d3)} .merge-box.plan .mt{color:var(--d2)} .merge-box.out .mt{color:var(--d5)}
+.merge-arrow{display:flex;align-items:center;justify-content:center;color:#c3cad8;font-size:16px;font-weight:700}
+.budget{background:var(--bg2);border:1px solid var(--rule);border-radius:12px;padding:20px;margin:14px 0}
+.brow{display:grid;grid-template-columns:110px 1fr 80px;gap:14px;align-items:center;margin:9px 0;font-size:13px}
+.brow .lbl{font-weight:700}
+.brow .track{background:#eef1f7;border-radius:6px;height:25px;position:relative;overflow:hidden}
+.brow .fill{position:absolute;top:0;left:0;bottom:0;border-radius:6px;display:flex;align-items:center;padding-left:10px;color:#fff;font-size:11.5px;font-weight:700;white-space:nowrap}
+.brow .hrs{text-align:right;font-weight:800;font-size:14px}
+.check{background:var(--bg2);border:1px solid var(--rule);border-radius:12px;padding:20px;margin:14px 0}
+.check label{display:flex;gap:10px;align-items:flex-start;padding:7px 0;font-size:14px;cursor:pointer;border-bottom:1px dashed var(--rule)}
+.check label:last-child{border-bottom:none}
+.check input{margin-top:4px;accent-color:var(--accent);width:16px;height:16px;flex:none}
+.check input:checked + span{color:var(--muted);text-decoration:line-through}
+.pbar{height:8px;background:#eef1f7;border-radius:6px;overflow:hidden;margin:8px 0 12px}
+.pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0;transition:width .3s}
+.ptxt{font-size:12.5px;color:var(--muted);display:flex;justify-content:space-between}
+footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--rule);font-size:12.5px;color:var(--muted)}
+@media(max-width:860px){.wgrid{grid-template-columns:repeat(2,1fr)}.phase-legend{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){
+  .out-grid{grid-template-columns:repeat(2,1fr)}
+  .day-head{flex-wrap:wrap;gap:10px}
+  .dd-meta{flex-direction:row;align-items:center;gap:8px;width:100%;justify-content:flex-start}
+  .hero h1{font-size:22px}
+  .rhythm{grid-template-columns:repeat(4,1fr)}
+  body{font-size:14px}
+  .merge-row{grid-template-columns:1fr}.merge-arrow{transform:rotate(90deg);padding:1px 0}
+}
+@media print{.topbar,.tabs,.tb-reset{display:none}.day{page-break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-in">
+    <div class="tb-title">大二上动态规划表 · 课程 × 周计划并线</div>
+    <div class="tb-right">
+      <span class="tb-week" id="weekChip">—</span>
+      <span class="tb-prog" id="progTxt">0/36</span>
+      <div class="tb-bar"><i id="progBar"></i></div>
+      <button class="tb-reset" id="resetBtn" title="清空所有勾选">重置</button>
+    </div>
+  </div>
+</div>
+
+<nav class="tabs" id="tabs">
+  <button data-view="map" class="active">学期地图</button>
+  <button data-view="week">本周执行<span class="bdg" id="weekBdg"></span></button>
+  <button data-view="course">课程并线</button>
+</nav>
+
+<div class="wrap">
+
+<header class="hero">
+  <h1>大二上 · 动态规划表</h1>
+  <p class="sub">课程 × 周计划并线版 · 2026.09.01 – 2027.01 · 根据今天日期自动定位</p>
+  <div class="chips">
+    <span class="chip"><b>16</b> 周</span>
+    <span class="chip"><b>6</b> 维度</span>
+    <span class="chip"><b>8</b> 门课</span>
+    <span class="chip">W1 <b>28</b> 项任务</span>
+    <span class="chip"><b>2</b> 个验收节点</span>
+  </div>
+  <div class="now-banner" id="nowBanner"></div>
+</header>
+
+<!-- ================= 视图1：学期地图 ================= -->
+<section id="view-map">
+  <h2 class="sec">学期四阶段</h2>
+  <div class="phase-legend" id="phaseLegend"></div>
+
+  <h2 class="sec">16 周 × 6 维度 全景</h2>
+  <div class="wgrid" id="weekGrid"></div>
+
+  <div class="mile-strip">
+    <b>验收节点：</b><span class="mi">W8</span>四重验收（视觉规范 v1 + 页面重绘 + 案例一成型 + 比赛/简历/仓库/接单四项齐备）· <span class="mi">W16</span>学期复盘（作品集成型 + 组件库 v1 + 实习线索 30 家 + AI 数据汇总）。期末考集中在 12 月中–1 月初，W13 起周计划进入半速预案。
+  </div>
+</section>
+
+<!-- ================= 视图2：本周执行 ================= -->
+<section id="view-week" hidden>
+  <div id="weekContent"></div>
+</section>
+
+<!-- ================= 视图3：课程并线 ================= -->
+<section id="view-course" hidden>
+  <h2 class="sec">课程转化策略（典型课表 · 真实课表到手后按第 00 节规则校正）</h2>
+  <table>
+    <thead><tr><th style="width:110px">课程</th><th style="width:70px">档位</th><th>课内策略</th><th style="width:250px">对接规划器</th></tr></thead>
+    <tbody>
+      <tr><td class="main">字体设计</td><td><span class="tag a">直接</span></td><td>作业全用界面场景命题；字重层级、字距、中西混排认真学——B 端排版地基。</td><td><span class="dimchip" style="background:var(--d1)">d1</span><span class="week-ref">W2 排版 · W12 字体气质</span></td></tr>
+      <tr><td class="main">版式设计</td><td><span class="tag a">直接</span></td><td>网格系统吃透（迁移到界面栅格）；自选题材一律选「B 端界面改版」，作业当案例一素材。</td><td><span class="dimchip" style="background:var(--d1)">d1</span><span class="dimchip" style="background:var(--d3)">d3</span><span class="week-ref">W4 栅格 · W11 层级 · W5–8 案例一</span></td></tr>
+      <tr><td class="main">标志 / VI 设计</td><td><span class="tag a">直接</span></td><td><b>本学期最重要的一门</b>：VI 规范手册当「设计系统文档」做——Figma 制作、按 token 三层组织。</td><td><span class="dimchip" style="background:var(--d2)">d2</span><span class="week-ref">W11–14 设计系统四连周</span></td></tr>
+      <tr><td class="main">插画</td><td><span class="tag b">间接</span></td><td>练一套扁平风格；选题往「空状态/引导页」靠，产出喂 B 端案例。</td><td><span class="dimchip" style="background:var(--d6)">d6</span><span class="dimchip" style="background:var(--d1)">d1</span><span class="week-ref">d6 W7 空态插画 · d1 W13 品牌感</span></td></tr>
+      <tr><td class="main">摄影基础</td><td><span class="tag b">间接</span></td><td>基础够用即可；拍工作场景/产品图——作品集与比赛的免费素材供应商。</td><td><span class="dimchip" style="background:var(--d3)">d3</span><span class="dimchip" style="background:var(--d5)">d5</span><span class="week-ref">作品集配图 · 比赛素材</span></td></tr>
+      <tr><td class="main">中外设计史</td><td><span class="tag c">低耗</span></td><td>考前突击 85 分万岁；包豪斯、瑞士平面主义两章认真听——网格理论源头 + 面试谈资。</td><td><span class="dimchip" style="background:var(--d1)">d1</span><span class="week-ref">W4 栅格的理论背书</span></td></tr>
+      <tr><td class="main">大学英语</td><td><span class="tag c">低耗</span></td><td>反向利用：英文设计文档当英语素材（Arco/Carbon 文档、ISUX 文章）。</td><td><span class="dimchip" style="background:var(--d2)">d2</span><span class="dimchip" style="background:var(--d4)">d4</span><span class="week-ref">d2 W11 · d4 W8 案例研究</span></td></tr>
+      <tr><td class="main">体育 / 思政</td><td><span class="tag c">最低耗</span></td><td>按时出勤正常完成——周计划的保护垫，不是加时项。</td><td><span class="week-ref">无对接 · 守住出勤</span></td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="sec">一鱼多吃合并表（课程作业 → 周任务 → 作品集）</h2>
+  <div id="mergeArea"></div>
+
+  <h2 class="sec">每周时间预算（约 43h）</h2>
+  <div class="budget">
+    <div class="brow"><div class="lbl">上课</div><div class="track"><div class="fill" style="width:49%;background:var(--d3)">约 21 学时</div></div><div class="hrs">21h</div></div>
+    <div class="brow"><div class="lbl">课内作业</div><div class="track"><div class="fill" style="width:19%;background:var(--d4)">分档投入</div></div><div class="hrs">8h</div></div>
+    <div class="brow"><div class="lbl">周计划·平日</div><div class="track"><div class="fill" style="width:17%;background:var(--d1)">每晚 1.5–2h</div></div><div class="hrs">8h</div></div>
+    <div class="brow"><div class="lbl">周计划·周六</div><div class="track"><div class="fill" style="width:9%;background:var(--d2)">产出日</div></div><div class="hrs">4h</div></div>
+    <div class="brow"><div class="lbl">周计划·周日</div><div class="track"><div class="fill" style="width:8%;background:var(--d6)">复盘补漏</div></div><div class="hrs">3.5h</div></div>
+    <div class="brow"><div class="lbl">弹性缓冲</div><div class="track"><div class="fill" style="width:5%;background:#94a0b8">兜底</div></div><div class="hrs">2h</div></div>
+  </div>
+
+  <h2 class="sec">课表落地核对清单</h2>
+  <div class="check" id="courseCheck">
+    <div class="pbar"><i id="cfill"></i></div>
+    <div class="ptxt"><span id="ctext">0 / 8 项完成</span><span>自动保存在本机</span></div>
+    <label><input type="checkbox" data-k="c1"><span>真实课表拿到后，逐门标档位（屏幕相关 → 直接转化）</span></label>
+    <label><input type="checkbox" data-k="c2"><span>删掉未开设的课程，微调合并表作业名称</span></label>
+    <label><input type="checkbox" data-k="c3"><span>有选修空间：优先选网页设计 / 交互 / 编程类</span></label>
+    <label><input type="checkbox" data-k="c4"><span>确认「平日晚 1.5–2h + 周六产出日」节奏已启动</span></label>
+    <label><input type="checkbox" data-k="c5"><span>VI 课第一次作业就用 Figma 交稿</span></label>
+    <label><input type="checkbox" data-k="c6"><span>11 月底前确认结课大作业题目，并入 d3 素材计划</span></label>
+    <label><input type="checkbox" data-k="c7"><span>期末展示课主动报名讲「VI手册=设计系统」流程</span></label>
+    <label><input type="checkbox" data-k="c8"><span>12 月作品集成型后，向老师开口要内推渠道</span></label>
+  </div>
+</section>
+
+<footer>
+  <p>动态规划表 · 合并自「课程规划对照表」与「开学第一周每日任务清单」 · 勾选与复盘保存在本机浏览器 localStorage · 与规划器六维度周表一一对应 · 可打印（Ctrl+P）</p>
+</footer>
+
+</div>
+
+<script>
+/* ================= 数据 ================= */
+var SEM_START = new Date(2026,8,1);
+
+var PHASES = [
+  {name:'地基期',from:1,to:4,color:'#5b6cff',desc:'规范起步 · 课内适应，作业量小全力并线'},
+  {name:'组件期',from:5,to:8,color:'#15c2a6',desc:'课内大作业选题 · 并线收益最大的一段'},
+  {name:'系统期',from:9,to:12,color:'#9b5de5',desc:'VI 手册 × 设计系统同频 · 设计史期中降速一周'},
+  {name:'集成期',from:13,to:16,color:'#f5a623',desc:'结课季 + 期末考 · 周计划半速预案'}
+];
+
+var DIMS = {
+  d1:{name:'专业技能',color:'#5b6cff',weeks:[
+    ['UI色彩系统','主色+9阶中性色、功能色四件套；对比度4.5:1自检','B端色板表1张'],
+    ['中文排版系统','字号阶梯12–28、行高、字重层级、数字等宽','排版规范页1张'],
+    ['图标系统入门','24px网格、1.5–2px线宽、圆角端点统一','16个线性图标'],
+    ['间距与栅格','8pt间距系统；内容区栅格1280/1440两档','间距规范卡+栅格模板'],
+    ['暗色主题色彩','语义色与亮暗共用色板；暗色对比度复检','暗色色板+对照页1份'],
+    ['数据排版','表格数字、千分位、单位、对齐；长文本截断','数据排版规范页1张'],
+    ['图标进阶','线性+填充双风格；图标气质与界面匹配','图标集升级至32个'],
+    ['阶段验收·视觉规范','整合色板+排版+图标成视觉基础规范','视觉规范v1'],
+    ['组件质感','阴影层级、边框、圆角、禁用态灰度','按钮质感演进图'],
+    ['界面配色实战','同一后台配3种行业气质','3套配色方案对照页'],
+    ['信息层级与密度','F型/Z型动线；卡片密度三档','同页3种密度版本'],
+    ['UI字体气质','中英文UI字体搭配；数字字体选型','UI字体搭配卡3组'],
+    ['品牌感注入','品牌色点缀、插画位、圆角统一','带品牌感的界面主题'],
+    ['视觉走查','走查清单与还原度检查方法','走查清单+真实走查报告'],
+    ['个人UI视觉语言','定自己的视觉母题','个人UI风格卡1张'],
+    ['复盘+规划','挑3件最佳产出改精','作品清单+阶段二计划']
+  ]},
+  d2:{name:'软件与工具',color:'#15c2a6',weeks:[
+    ['Figma上手·概念迁移','画板/钢笔/布尔运算；auto layout=flexbox','重绘1张真实App设置页'],
+    ['组件、变体与样式','component/variant/property；样式token化','按钮5尺寸×4状态变体矩阵'],
+    ['组件解剖·输入类','输入框/选择器/开关；全状态矩阵','输入组件全状态规范页'],
+    ['组件解剖·反馈类','Modal/Drawer/Toast/空态/骨架屏','反馈组件规范页+判断卡'],
+    ['表格(上)','列宽策略/表头筛选/排序/固定列','表格规范1份（8种状态）'],
+    ['表格(下)','分页/批量操作二次确认/展开行','完整数据列表页1张'],
+    ['表单','水平/垂直/内联布局；校验时机','表单规范+分步表单1套'],
+    ['阶段验收·页面重绘','用自建组件重绘完整后台页面','完整后台页1张（组件≥15个）'],
+    ['导航与页面框架','侧边栏/顶栏/面包屑/标签页','后台框架布局模板1套'],
+    ['交互原型','用户流程图与线框图；Prototype联动','一条CRUD流程可点击原型'],
+    ['设计系统认知','精读AntD/TDesign/Arco价值观；对比','设计系统对比笔记1份'],
+    ['Token体系','全局token→别名token→组件token','自己项目token清单v0'],
+    ['组件库组织','组件命名规范；发布Figma Library','组件库v1（Library）'],
+    ['主题与换肤','亮/暗主题共用一套别名token','暗色主题组件全览1页'],
+    ['设计交付前端','token导出JSON对应CSS变量','tokens.json+交付说明页'],
+    ['复盘+提速','重做W8页面计时对比','提速记录+阶段二计划']
+  ]},
+  d3:{name:'作品集建设',color:'#9b5de5',weeks:[
+    ['作品集定位','定B端方向结构；注册站酷+Behance','结构清单+两个账号就绪'],
+    ['案例一选题','选定改版对象（推荐自己的成长规划器）','选题报告+原界面截图'],
+    ['案例一审计','逐页审计列问题清单；信息架构调整','审计报告1份（≥10条）'],
+    ['案例一线框','画用户流程图与线框图','流程图+线框稿1套'],
+    ['案例一视觉(上)','用规范做框架页与导航高保真','高保真页面2张'],
+    ['案例一视觉(下)','核心功能页高保真','高保真页面3张'],
+    ['案例一组件化','用自建组件重组页面；统计复用率','组件复用对照表'],
+    ['阶段验收·案例一','前后对比+150字设计说明','作品集第1件B端案例'],
+    ['案例一深化','补交互原型、空/加载/错误态','可点击原型1条'],
+    ['平面作品改造①','课程作业按四步法改造（海报类）','平面作品1件上线站酷'],
+    ['平面作品改造②','改造画册或字体类作业','平面作品1件'],
+    ['过程页补齐','给案例与平面作品补过程稿','过程页3套齐备'],
+    ['设计说明打磨','每件写150字四段式说明','设计说明×3'],
+    ['作品集排版','封面/目录/案例页排版','作品集PDF v1'],
+    ['双平台上线','站酷/Behance同步','双平台上线完成'],
+    ['复盘找缺口','对照B端JD查作品集缺口','缺口清单+阶段二计划']
+  ]},
+  d4:{name:'行业接轨',color:'#f5a623',weeks:[
+    ['B端岗位地图','B端设计岗四类赛道','岗位地图1张'],
+    ['自我定位','用『设计+前端』复合优势写定位','定位陈述1段'],
+    ['JD搜集+薪资分档','搜10条JD存档，记薪资区间','JD库≥10条（含分档）'],
+    ['JD拆解·分层词频','高价档词 vs 低价档词对比','分层词频统计表1份'],
+    ['B端产品体验①','深度使用飞书/Notion写笔记','体验笔记1篇'],
+    ['B端产品体验②','深度使用Linear/多维表格对比','体验笔记1篇'],
+    ['阶段验收·技能优先级','P0设计系统→P1 AI→P2前端','优先级表1份（三档）'],
+    ['设计系统案例研究','读ISUX/AntD团队文章','研究笔记2篇'],
+    ['工业软件赛道研究','多终端/AI交互/12–20K区间','赛道笔记1篇（含JD）'],
+    ['信息源搭建','关注ISUX/AntD/TDesign等5个源','信息源清单'],
+    ['差距盘点','对照JD词频逐项打分','Gap清单'],
+    ['补差规划','把Gap排进维度1/2周计划','补差计划'],
+    ['对标设计师','关注10个B端设计师','对标清单'],
+    ['主攻确认','锁定三张牌写定位卡','定位卡1张'],
+    ['薪资分层与城市','同岗名差3–5倍的真相','调研笔记+分层判断'],
+    ['复盘+规划','更新趋势判断','大二下行业计划']
+  ]},
+  d5:{name:'实践与就业',color:'#ef5b5b',weeks:[
+    ['比赛地图','搜UI/交互类可投比赛','比赛清单≥3'],
+    ['选赛定题','选1个比赛定选题写Brief','参赛Brief'],
+    ['比赛执行','出初稿（用规范执行）','作品初稿'],
+    ['比赛收尾','打磨+提交1个比赛','已投稿记录'],
+    ['简历骨架','写1页简历（作品集链接置顶）','简历v0'],
+    ['前端作品仓库','整理GitHub写README','作品仓库1个'],
+    ['接单认知','学报价/合同/版权','接单手册1页'],
+    ['阶段验收','比赛+简历+仓库+接单四项齐备','四项齐备'],
+    ['小单试水','接1个界面美化小单','完成交付1单'],
+    ['复盘小单','写报价—沟通—交付复盘','复盘笔记'],
+    ['面试讲述①','给案例一练3分钟话术','讲稿1份'],
+    ['面试讲述②','给组件库/平面作品练话术','讲稿1份'],
+    ['材料包','整合作品集+简历+授权说明','求职包v1'],
+    ['实习认知','研究什么实习值得去','实习攻略'],
+    ['实习线索','列30家目标公司分层清单','公司分层清单'],
+    ['复盘+规划','列大二下冲刺计划','大二下计划']
+  ]},
+  d6:{name:'AI工作流',color:'#ec4899',weeks:[
+    ['AI工具地图','注册Figma Make/MJ/v0；建立使用原则','账号就绪+原则笔记'],
+    ['Midjourney起步','提示词四要素；出B端mood board','mood board 1组（10张）'],
+    ['提示词一致性','--ar/--stylize参数；3种风格稳定复现','风格探索页1张'],
+    ['Figma Make初试','生成界面初稿，自己重画对比','AI初稿vs手绘对比页'],
+    ['AI素材驯化①','MJ图当素材，用自己规范统一气质','统一规范后素材页1张'],
+    ['AI当线框机','快速出3版布局方案，人工筛选','3版布局对比卡1份'],
+    ['空状态插画','MJ生成B端空态/登录页插画','空状态插画1套（3张）'],
+    ['阶段验收·AI对比','纯手绘vs AI工作流计时对比','时间质量对比报告'],
+    ['提示词库搭建','按场景沉淀：图标/插画/背景/气质','提示词库v1（≥20条）'],
+    ['AI辅助改版探索','AI出20个方向，人工筛3个','筛选记录（20→3）'],
+    ['AI版权与伦理','版权边界、商用规则、标注惯例','版权笔记1页'],
+    ['工作流文档化','AI步骤写进设计流程文档','个人设计流程图v1'],
+    ['v0初试','高保真稿生成前端代码并找问题','v0生成页+结构笔记'],
+    ['AI与设计系统','实验AI生成组件变体的坑','AI组件实验记录'],
+    ['AI面试话术','『我的AI工作流』3分钟讲述','AI工作流话术1份'],
+    ['复盘+下阶段规划','汇总AI使用数据','复盘+阶段二计划']
+  ]}
+};
+
+var WEEK1_DAYS = [
+  {n:1,date:'9月1日 · 周二',title:'启动日：规划器就绪 + Figma 开环境',sub:'开学第一天，只做两件事：让规划器跑起来、让 Figma 能用',dur:'≈1.5h',color:'#3370ff',
+   tasks:[
+    ['规划器开工设置（10min）','打开视觉传达大二成长规划器 → 顶部「开学日」设为 <mark class="key">2026-09-01</mark> → 确认阶段为学期 16 周模式 → 概览页过一遍本周 6 个维度任务。'],
+    ['注册 Figma（10min）','figma.com 免费注册，邮箱即可。浏览器直接用，学生免费档完全够。'],
+    ['认识界面三个区（30min）','左 = 图层/页面树，中 = 画布，右 = 属性面板。先记 5 个快捷键：<span class="km">F</span> 画板 · <span class="km">R</span> 矩形 · <span class="km">O</span> 椭圆 · <span class="km">T</span> 文字 · <span class="km">V</span> 移动。'],
+    ['画第一张画板（40min）','新建设计文件 → <span class="km">F</span> 画 375×812 手机画板 → 手机里截一张 App 设置页拖进来 → 用 <span class="km">T</span> 描着打一遍页内标题，感受真实字号。']
+   ],
+   pit:'别急着装插件、学高级功能。第一周只打通「画板 / 形状 / 文字 / auto layout」四件事。'},
+  {n:2,date:'9月2日 · 周三',title:'Figma 概念迁移：auto layout = flexbox',sub:'你会写 CSS，学这个是降维打击——把 Web 概念一对一搬进 Figma',dur:'≈2h',color:'#15c2a6',
+   tasks:[
+    ['钢笔工具（30min）','按 <span class="km">P</span>，画三样东西：搜索图标轮廓、平滑曲线、圆角卡片。重点练锚点两侧「角度把手」的控制。'],
+    ['布尔运算（20min）','选中两个形状试 Union / Subtract / Intersect / Exclude，拼 1 个组合图标。'],
+    ['auto layout 对照 flexbox（40min）','按 <span class="km">Shift+A</span>：先做一行「图标+文字」（水平、gap 8），再做一列「标题+描述」（垂直、gap 4）。对照记忆：gap→gap、padding→padding、direction→flex-direction、align→align-items。'],
+    ['嵌套实战：画一张卡片（30min）','外层垂直 auto layout（padding 16）内放「头像+名字」水平行（gap 12）+ 一段简介。故意改长文字，看布局<mark class="key">自动撑开不用重排</mark>。']
+   ],
+   out:'Figma 基础练习文件（含 4 组练习），存进练习专用文件',
+   tut:['https://www.bilibili.com/video/BV1n3iMByEug','https://www.bilibili.com/video/BV1qQ4y167Vd'],
+   pit:'不用 auto layout 直接拖坐标，改一版重排一次——从今天起禁止手动定位。'},
+  {n:3,date:'9月3日 · 周四',title:'UI 色彩系统（上）：主色与中性色',sub:'B端界面的地基是色板——今天搭出 60%',dur:'≈2h',color:'#5b6cff',
+   tasks:[
+    ['定主色（30min）','B 端选蓝 / 青 / 紫系最安全。HSL 三条约束：<mark class="key">饱和度 ≤ 80%、明度 40–55%</mark>。定 1 个主色，并写一句话说明为什么选它。'],
+    ['中性色 9–10 阶（50min）','从近黑（≈ #1F2329）拉到近白（≈ #F5F6F8），共 9–10 阶，相邻阶明度差尽量均匀。深蓝灰比纯灰高级；结构参考 Ant Design。'],
+    ['标注用途（40min）','每阶写清用途：900/800 大标题 · 700 正文 · 500 辅助 · 400 图标 · 300 边框 · 200 分割线 · 100 禁用/页面底 · 50 卡片背景。']
+   ],
+   out:'色板表完成 60%（主色 + 中性色阶 + 用途标注），明天收尾交件',
+   pit:'中性色带明显色偏，整屏界面会显脏。眯眼或离远看整体，灰得「干净」才算过关。'},
+  {n:4,date:'9月4日 · 周五',title:'UI 色彩系统（下）：功能色 + 对比度自检',sub:'今天结束时，你手里有第一件能进作品墙的规范件',dur:'≈2h',color:'#5b6cff',
+   tasks:[
+    ['功能色四件套（30min）','成功绿、警告橙、危险红、信息蓝各定一档；顺手做 hover 加深一档。'],
+    ['对比度自检（40min）','WebAIM Contrast Checker 或 Figma 插件 Contrast。硬规则：<mark class="key">正文 ≥ 4.5:1，18px 以上大字 ≥ 3:1</mark>。不达标的色阶现场调整。'],
+    ['整理成「B端色板表」（50min）','Figma 里一页排完：色块 + HEX 值 + 用途 + 对比度数值。用 auto layout 排表格（顺便复习 Day 2）。']
+   ],
+   out:'产出① 交付：B端色板表 1 张——维度1 第 1 周验收件，存档 + 传规划器作品墙',
+   pit:'别跳过对比度直接交。「色板过不过对比度这关」是面试官 30 秒内判断你专不专业的地方。'},
+  {n:5,date:'9月5日 · 周六',title:'重绘日：App 设置页（本周大件）',sub:'把前三天的 Figma + 色板功夫合成一张完整的重绘图',dur:'≈4h',color:'#15c2a6',
+   tasks:[
+    ['选重绘对象（15min）','挑一个真实 App 的「设置」页：推荐微信、网易云音乐或 iOS 设置（分组结构清晰）。只画其中 2–3 个分组，别贪整页。'],
+    ['参考图导入（15min）','截图拖入 Figma，右键 Lock 锁定置底，当底图描。'],
+    ['骨架重绘，只搭结构（90min）','设置页 = 多个分组列表；每组 = 垂直 auto layout；每行 = 「图标 + 标题 + 右侧值/箭头」水平行。全部 auto layout 搭建，间距取 <mark class="key">8 的倍数</mark>，禁手拖坐标。'],
+    ['细节与像素级对齐（60min）','勾选 Snap to pixel grid；字号统一；图标用 <span class="km">O</span>/<span class="km">R</span> 拼或钢笔勾；行高全表一致；颜色用 Day 3 色板里的色。'],
+    ['自查 5 项（30min）','① 每行图标垂直居中 ② 行高一致 ③ 组间距 &gt; 组内行距 ④ 图标与文字间距统一 ⑤ 和原截图逐区对比，找出自己 5 处偏差并修正。'],
+    ['存档（30min）','导出「原截图 + 重绘图」前后对比图，存作品文件夹，传规划器作品墙。']
+   ],
+   out:'产出② 交付：重绘 App 设置页 1 张（像素级对齐）——维度2 第 1 周验收件',
+   tut:['https://www.bilibili.com/video/BV19TDGYWEp7'],
+   pit:'「看着差不多」就过是临摹大忌。放大到 800% 和原图对比像素，逼自己对齐。'},
+  {n:6,date:'9月6日 · 周日',title:'认知日：岗位地图 + 比赛 + 作品集 + AI 启动',sub:'不动手的轻任务，四个维度一次清完',dur:'≈3.5h',color:'#9b5de5',
+   tasks:[
+    ['B端岗位地图（50min · 维度4）','四类赛道各找 2 家代表公司 + 1 个岗位名：SaaS 办公协同、政企系统、工业软件、中后台。注明城市，整理成一页「岗位地图」。'],
+    ['可投比赛清单（50min · 维度5）','搜 UI / 交互类比赛：大广赛、学院奖、站酷设计大赛、UXD Award 等。每条记四项：主办方、级别、报名时间、deadline。凑满 ≥ 3 条。'],
+    ['作品集定位 + 双平台注册（80min · 维度3）','定结构：封面 → 案例×N → 关于我。注册站酷 + Behance，<mark class="key">把 Day 4 的色板表今天就传上去</mark>当第一件存货。'],
+    ['AI 工作流启动（30min · 维度6）','注册 <mark class="key">Midjourney</mark>（走 Discord）/ <mark class="key">v0.dev</mark>（GitHub 登录）；写使用原则：<mark class="key">AI 是草稿机，不是成品机</mark>。顺手用 MJ 出 2 张图感受提示词。']
+   ],
+   out:'产出③④⑤⑥ 交付：作品集结构清单+双账号（d3）· 岗位地图（d4）· 比赛清单≥3（d5）· AI 账号+原则笔记（d6）',
+   tut:['https://m.zcool.com.cn/article/ZMTcwNDQxNg==.html'],
+   pit:'① 注册完不传第一件作品，账号永远空壳；② AI 账号注册完就扔，第二周 Midjourney 起步会卡在登录环节。'},
+  {n:7,date:'9月7日 · 周一',title:'收尾日：补漏 + 复盘 + 预习 W2',sub:'本周最后一件事：让下周跑得更快',dur:'≈1.5h',color:'#15c2a6',
+   tasks:[
+    ['补漏（40min）','对照 6 件产出清单逐件检查：色板表 / 设置页重绘 / 作品集结构+账号 / 岗位地图 / 比赛清单 / AI 账号+原则笔记。缺哪件补哪件。'],
+    ['规划器打卡（10min）','把本周 6 个维度任务在规划器里标记完成，看一眼本周完成度百分比。'],
+    ['复盘三问，写下来（20min）','见下方复盘区，三条问题各写一句实话。'],
+    ['预习 W2：组件变体 + Midjourney（20min）','下周主线：按钮 5 尺寸 × 4 状态 = 20 个变体矩阵，先看教程前 1–2 集预热；AI 线：Midjourney 提示词四要素。']
+   ],
+   tut:['https://www.bilibili.com/video/BV1qQ4y167Vd']}
+];
+
+var MERGES = [
+  {seg:'W1–W4 · 9月 地基期',sub:'课内适应 + 规范起步',rows:[
+    ['课程作业 · 字体课｜字体海报/字族练习','周任务 · d1 W2｜中文排版规范页','作品集｜视觉规范 v1 的字阶板块'],
+    ['课程作业 · 版式课｜网格构成练习','周任务 · d1 W4｜8pt 间距规范卡+栅格','作品集｜同一份规范页双用'],
+    ['课程作业 · VI课｜标志提案（Figma 交稿）','周任务 · d2 W1–W2｜Figma 上手+组件','作品集｜工具迁移零成本'],
+    ['课程作业 · 插画课｜风格探索小稿','周任务 · d6 W2–W3｜MJ mood board','作品集｜手绘 vs AI 对照素材']]},
+  {seg:'W5–W8 · 10月 组件期',sub:'并线收益最大的一段',rows:[
+    ['课程作业 · 版式课｜自选题大作业开题','周任务 · d3 W2–W4｜案例一选题+审计+线框','作品集｜案例一双线共用一套调研'],
+    ['课程作业 · 字体课｜中西文搭配作业','周任务 · d1 W12｜UI 字体搭配卡 3 组','作品集｜字体气质卡上线站酷'],
+    ['课程作业 · 插画课｜主题创作','周任务 · d6 W7｜B 端空状态插画一套','作品集｜案例一空态配图']]},
+  {seg:'W9–W12 · 11月 系统期',sub:'VI 手册与设计系统同频',rows:[
+    ['课程作业 · VI课｜规范手册开做','周任务 · d2 W12｜Token 体系三层','作品集｜VI 手册 = 迷你设计系统文档'],
+    ['课程作业 · 摄影课｜结课作品拍摄','周任务 · d3 W10–11｜平面作品改造上线','作品集｜站酷/Behance 配图素材'],
+    ['课程事件 · 设计史｜期中考试','当周周计划｜只保 P0 任务','止损优先']]},
+  {seg:'W13–W16 · 12月–1月 集成期',sub:'结课季 + 期末考半速',rows:[
+    ['课程作业 · VI课｜结课手册定稿','周任务 · d2 W13–14｜组件库v1+主题换肤','作品集｜第 2 件系统级案例雏形'],
+    ['课程事件 · 全部课｜结课大作业提交','周任务 · d3 W14｜作品集 PDF v1','作品集｜结课作品即素材库'],
+    ['课程事件 · 期末考｜12月中–1月初','周计划半速｜只保 d2 W15–16','考完立刻回满速收尾']]}
+];
+
+var KEY = 'dyn-planner-v1';
+
+/* ================= 日期计算 ================= */
+function stripTime(d){ return new Date(d.getFullYear(),d.getMonth(),d.getDate()); }
+function todayIdx(){
+  var diff = Math.floor((stripTime(new Date()) - SEM_START) / 86400000);
+  return diff; // <0 开学前; 0..111 学期内
+}
+function currentWeek(){ var i = todayIdx(); if(i < 0) return 0; return Math.min(16, Math.floor(i/7)+1); }
+function fmt(d){ return (d.getMonth()+1)+'月'+d.getDate()+'日'; }
+function weekRange(n){
+  var s = new Date(SEM_START); s.setDate(s.getDate()+(n-1)*7);
+  var e = new Date(s); e.setDate(e.getDate()+6);
+  return fmt(s)+' – '+fmt(e);
+}
+
+/* ================= 渲染：学期地图 ================= */
+function phaseOf(n){ for(var i=0;i<PHASES.length;i++){ var p=PHASES[i]; if(n>=p.from&&n<=p.to) return p; } return PHASES[3]; }
+
+function renderMap(){
+  var cur = currentWeek();
+  var lg = document.getElementById('phaseLegend');
+  lg.innerHTML = PHASES.map(function(p){
+    return '<div class="pl-card" style="--pc:'+p.color+'"><b><i>W'+p.from+'–'+p.to+'</i>'+p.name+'</b><span>'+p.desc+'</span></div>';
+  }).join('');
+
+  var g = document.getElementById('weekGrid');
+  var html = '';
+  for(var n=1;n<=16;n++){
+    var p = phaseOf(n);
+    var cls = 'wk' + (n===cur?' cur':'') + (cur>0&&n<cur?' past':'');
+    var chips = '';
+    if(n===8) chips += '<span class="ms-chip">验收</span>';
+    if(n===16) chips += '<span class="ms-chip">验收</span>';
+    if(n===cur) chips += '<span class="cur-chip">本周</span>';
+    var rows = '';
+    ['d1','d2','d3','d4','d5','d6'].forEach(function(k){
+      var d = DIMS[k];
+      rows += '<div class="wk-row"><i style="background:'+d.color+'"></i><b>'+d.name+'</b> '+d.weeks[n-1][0]+'</div>';
+    });
+    html += '<div class="'+cls+'" style="--pc:'+p.color+'">'+chips+
+      '<div class="wk-head"><b>W'+n+'</b><span>'+weekRange(n)+'</span></div>'+
+      '<div class="wk-rows">'+rows+'</div></div>';
+  }
+  g.innerHTML = html;
+}
+
+/* ================= 渲染：本周执行 ================= */
+function renderWeek(){
+  var cur = currentWeek();
+  var box = document.getElementById('weekContent');
+  var banner = document.getElementById('nowBanner');
+  if(cur === 0){
+    banner.innerHTML = '<b>开学前</b> · 今天还没到 9 月 1 日，先把 Figma 装好、账号注册好。';
+    box.innerHTML = '<div class="wk-banner">开学（2026-09-01）后本页自动切换到第 1 周任务。</div>';
+    return;
+  }
+  var p = phaseOf(cur);
+  banner.innerHTML = '今天是 <b>'+fmt(new Date())+'</b>（'+['周日','周一','周二','周三','周四','周五','周六'][new Date().getDay()]+'）· 学期第 <b>'+cur+'</b> 周 · '+p.name+'（W'+p.from+'–'+p.to+'）· '+p.desc;
+  document.getElementById('weekBdg').textContent = 'W'+cur;
+
+  var h = '';
+  h += '<div class="wk-banner"><b>第 '+cur+' 周 · '+weekRange(cur)+'</b> · 本周六维度任务如下；平日每晚 1.5–2h、周六产出日 4h、周日复盘 3.5h。</div>';
+
+  ['d1','d2','d3','d4','d5','d6'].forEach(function(k){
+    var d = DIMS[k]; var w = d.weeks[cur-1];
+    h += '<div class="dimcard" style="--dc:'+d.color+'"><h4><span class="dc">'+d.name+'</span>'+w[0]+'</h4>'+
+         '<p>'+w[1]+'</p><div class="dy-out"><b>验收产出：</b>'+w[2]+'</div></div>';
+  });
+
+  h += '<h2 class="sec">每周固定节奏</h2><div class="rhythm">'+
+    '<div class="rh"><b>周一</b><span>定计划</span></div><div class="rh"><b>周二–周五</b><span>每晚 1.5–2h</span></div>'+
+    '<div class="rh wknd"><b>周六</b><span>产出日 4h</span></div><div class="rh wknd"><b>周日</b><span>复盘 3.5h</span></div>'+
+    '<div class="rh"><b>周一</b><span>补漏+预习</span></div></div>';
+
+  if(cur === 1){
+    h += '<h2 class="sec">第一周 · 每日明细（今天自动高亮）</h2>';
+    var ti = todayIdx();
+    WEEK1_DAYS.forEach(function(day){
+      h += renderDay(day, ti === (day.n-1));
+    });
+    h += '<h2 class="sec">周日复盘 · 三问</h2><div class="review"><h3>写在 Day 7，各答一句实话</h3><ol>'+
+      '<li>哪项任务实际耗时超出预估 50% 以上？为什么？<textarea data-review="q1" placeholder="例如：Day 5 重绘用了 5.5h，卡在图标对齐"></textarea></li>'+
+      '<li>哪件产出没做完，卡在哪一步？<textarea data-review="q2" placeholder="例如：比赛清单只找到 2 条"></textarea></li>'+
+      '<li>课表定下来后，下周每天的可学习时段是几点到几点？<textarea data-review="q3" placeholder="例如：周一三晚 19:30–21:30"></textarea></li></ol></div>';
+  } else {
+    h += '<div class="wk-banner">第一周明细已归档（28 项任务、6 件产出）——本页只显示当前周。每周打卡请在<b>视觉传达大二成长规划器</b>里进行，本表负责学期地图与课程并线总览。</div>';
+  }
+  box.innerHTML = h;
+}
+
+function renderDay(day, isToday){
+  var h = '<section class="day'+(isToday?' today':'')+'" data-day="'+day.n+'" style="--dc:'+day.color+'">'+
+    '<div class="day-head"><div class="dd-date"><b>0'+day.n+'</b><span>9月 · '+day.date.split(' · ')[1]+'</span></div>'+
+    '<div class="dd-main"><h3>'+(isToday?'<span class="today-chip">今天</span>':'')+day.title+'</h3><div class="dd-sub">'+day.sub+'</div></div>'+
+    '<div class="dd-meta"><span class="dur">'+day.dur+'</span><span class="day-count" data-daydone>0/'+day.tasks.length+'</span></div></div>'+
+    '<ol class="tasks">';
+  day.tasks.forEach(function(t,i){
+    h += '<li data-id="w1d'+day.n+'t'+(i+1)+'"><input type="checkbox"><span class="cb"></span><span class="tt"><b>'+t[0]+'</b><em>'+t[1]+'</em></span></li>';
+  });
+  h += '</ol>';
+  if(day.out) h += '<div class="out"><b>今日产出：</b>'+day.out+'</div>';
+  if(day.tut){
+    var names = ['酸梅干超人 · Figma 零基础入门','传智教育 · Figma 从零到精通','色彩的设计原理 20 集','零基础学 Figma 2024','站酷 · 10 款自带 AI 的 UI 工具'];
+    h += '<div class="tut">配套教程：'+day.tut.map(function(u,i){return '<a href="'+u+'" target="_blank" rel="noopener">'+(names[i]||'教程')+'</a>';}).join(' · ')+'</div>';
+  }
+  if(day.pit) h += '<div class="pit"><b>坑：</b>'+day.pit+'</div>';
+  h += '</section>';
+  return h;
+}
+
+/* ================= 渲染：课程并线 ================= */
+function renderCourse(){
+  var area = document.getElementById('mergeArea');
+  area.innerHTML = MERGES.map(function(m){
+    var rows = m.rows.map(function(r){
+      return '<div class="merge-row">'+
+        '<div class="merge-box course"><div class="mt">'+r[0].split('｜')[0]+'</div>'+r[0].split('｜')[1]+'</div><div class="merge-arrow">→</div>'+
+        '<div class="merge-box plan"><div class="mt">'+r[1].split('｜')[0]+'</div>'+r[1].split('｜')[1]+'</div><div class="merge-arrow">→</div>'+
+        '<div class="merge-box out"><div class="mt">'+r[2].split('｜')[0]+'</div>'+r[2].split('｜')[1]+'</div></div>';
+    }).join('');
+    return '<div class="merge"><div class="mh"><span class="seg">'+m.seg+'</span><span class="seg-sub">'+m.sub+'</span></div>'+rows+'</div>';
+  }).join('');
+}
+
+/* ================= Tabs ================= */
+var tabs = document.querySelectorAll('#tabs button');
+tabs.forEach(function(b){
+  b.addEventListener('click', function(){
+    tabs.forEach(function(x){ x.classList.remove('active'); });
+    b.classList.add('active');
+    ['map','week','course'].forEach(function(v){
+      document.getElementById('view-'+v).hidden = (v !== b.dataset.view);
+    });
+    window.scrollTo({top:0, behavior:'smooth'});
+    if(location.hash !== '#'+b.dataset.view) history.replaceState(null,'','#'+b.dataset.view);
+  });
+});
+(function(){
+  var h = location.hash.replace('#','');
+  if(['map','week','course'].indexOf(h) >= 0){
+    tabs.forEach(function(x){ x.classList.toggle('active', x.dataset.view === h); });
+    ['map','week','course'].forEach(function(v){ document.getElementById('view-'+v).hidden = (v !== h); });
+  }
+})();
+
+/* ================= 状态持久化 ================= */
+var state = {};
+try{ state = JSON.parse(localStorage.getItem(KEY) || '{}'); }catch(e){ state = {}; }
+
+function saveState(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+
+function bindTasks(){
+  document.querySelectorAll('.tasks li').forEach(function(li){
+    var id = li.dataset.id;
+    var cb = li.querySelector('input[type=checkbox]');
+    if(state[id]) { cb.checked = true; li.classList.add('done'); }
+    cb.addEventListener('change', function(){
+      state[id] = cb.checked;
+      li.classList.toggle('done', cb.checked);
+      saveState(); renderCounts();
+    });
+    li.addEventListener('click', function(e){
+      if(e.target.tagName === 'A') return;
+      cb.checked = !cb.checked;
+      cb.dispatchEvent(new Event('change'));
+    });
+  });
+  document.querySelectorAll('textarea[data-review]').forEach(function(ta){
+    if(state[ta.dataset.review]) ta.value = state[ta.dataset.review];
+    ta.addEventListener('input', function(){ state[ta.dataset.review] = ta.value; saveState(); });
+  });
+}
+
+function bindCourseCheck(){
+  document.querySelectorAll('#courseCheck input[type=checkbox]').forEach(function(cb){
+    if(state[cb.dataset.k]) cb.checked = true;
+    cb.addEventListener('change', function(){
+      state[cb.dataset.k] = cb.checked; saveState(); renderCounts();
+    });
+  });
+}
+
+function renderCounts(){
+  var allCb = document.querySelectorAll('.tasks input[type=checkbox], #courseCheck input[type=checkbox]');
+  var done = 0;
+  allCb.forEach(function(cb){ if(cb.checked) done++; });
+  document.getElementById('progTxt').textContent = done+'/'+allCb.length;
+  document.getElementById('progBar').style.width = (allCb.length ? done/allCb.length*100 : 0)+'%';
+
+  document.querySelectorAll('.day').forEach(function(dayEl){
+    var lis = dayEl.querySelectorAll('.tasks li');
+    var d = 0; lis.forEach(function(li){ if(li.classList.contains('done')) d++; });
+    var badge = dayEl.querySelector('[data-daydone]');
+    if(badge) badge.textContent = d+'/'+lis.length;
+    dayEl.classList.toggle('all-done', lis.length > 0 && d === lis.length);
+  });
+
+  var cbs = document.querySelectorAll('#courseCheck input[type=checkbox]');
+  var cd = 0; cbs.forEach(function(cb){ if(cb.checked) cd++; });
+  var cf = document.getElementById('cfill'); var ct = document.getElementById('ctext');
+  if(cf) cf.style.width = (cd/cbs.length*100)+'%';
+  if(ct) ct.textContent = cd+' / '+cbs.length+' 项完成';
+}
+
+document.getElementById('resetBtn').addEventListener('click', function(){
+  if(!confirm('清空所有勾选与复盘内容？')) return;
+  state = {};
+  localStorage.removeItem(KEY);
+  document.querySelectorAll('.tasks input[type=checkbox], #courseCheck input[type=checkbox]').forEach(function(cb){
+    cb.checked = false;
+    if(cb.closest('li')) cb.closest('li').classList.remove('done');
+  });
+  document.querySelectorAll('.tasks li.done').forEach(function(li){ li.classList.remove('done'); });
+  document.querySelectorAll('textarea[data-review]').forEach(function(ta){ ta.value = ''; });
+  renderCounts();
+});
+
+/* ================= 顶栏周数 ================= */
+(function(){
+  var cur = currentWeek();
+  var chip = document.getElementById('weekChip');
+  chip.textContent = cur === 0 ? '开学前' : '第 '+cur+' 周';
+  if(cur > 0) chip.style.background = phaseOf(cur).color;
+})();
+
+/* ================= 启动 ================= */
+renderMap();
+renderWeek();
+renderCourse();
+bindTasks();
+bindCourseCheck();
+renderCounts();
+</script>
+</body>
+</html>
