@@ -291,6 +291,38 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--rule);font-si
 .rev-actions{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 0}
 .rev-pre{background:var(--bg2);border:1px solid var(--rule);border-radius:10px;padding:14px 16px;font-size:11.5px;font-family:Consolas,monospace;overflow:auto;max-height:320px;white-space:pre-wrap;margin-top:12px;line-height:1.6}
 
+/* ===== 返回顶部 ===== */
+#toTop{position:fixed;right:22px;bottom:26px;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;font-size:20px;font-weight:700;line-height:1;cursor:pointer;box-shadow:0 4px 14px rgba(47,91,216,.35);opacity:0;pointer-events:none;transform:translateY(10px);transition:opacity .25s,transform .25s,background .15s;z-index:60}
+#toTop.show{opacity:1;pointer-events:auto;transform:none}
+#toTop:hover{background:#1e46b8}
+@media print{#toTop{display:none}}
+
+/* ===== AI 问答 ===== */
+.ai-note{font-size:13px;color:var(--muted);margin:8px 0 14px;line-height:1.7}
+.ai-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.ai-chip{background:var(--bg2);border:1px solid var(--rule);border-radius:99px;padding:6px 14px;font-size:12.5px;cursor:pointer;color:#3a4256;transition:all .15s}
+.ai-chip:hover{border-color:var(--accent);color:var(--accent);background:#f0f4fd}
+.ai-log{background:var(--bg2);border:1px solid var(--rule);border-radius:14px;padding:16px;height:420px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.ai-msg{max-width:82%;border-radius:12px;padding:10px 14px;font-size:13.5px;line-height:1.7;animation:aiIn .25s ease}
+@keyframes aiIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.ai-msg.user{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:4px}
+.ai-msg.bot{align-self:flex-start;background:#fff;border:1px solid var(--rule);border-bottom-left-radius:4px}
+.ai-msg.bot .ai-src{display:inline-block;font-size:10.5px;color:var(--muted);background:var(--bg2);border-radius:5px;padding:1px 8px;margin-bottom:7px}
+.ai-msg.bot b{color:var(--accent)}
+.ai-msg.bot ul{margin:6px 0 0;padding-left:17px;display:flex;flex-direction:column;gap:3px}
+.ai-msg.bot .ai-more{margin-top:8px;font-size:11.5px;color:var(--muted);border-top:1px dashed var(--rule);padding-top:7px}
+.ai-thinking{align-self:flex-start;display:flex;gap:4px;padding:12px 16px;background:#fff;border:1px solid var(--rule);border-radius:12px;border-bottom-left-radius:4px}
+.ai-thinking i{width:6px;height:6px;border-radius:50%;background:#9aa4b2;animation:aiBlink 1.2s infinite}
+.ai-thinking i:nth-child(2){animation-delay:.2s}
+.ai-thinking i:nth-child(3){animation-delay:.4s}
+@keyframes aiBlink{0%,80%,100%{opacity:.3}40%{opacity:1}}
+.ai-bar{display:flex;gap:10px;margin-top:14px}
+.ai-bar input{flex:1;border:1px solid var(--rule);border-radius:10px;padding:11px 14px;font-size:13.5px;font-family:inherit;background:#fff}
+.ai-bar input:focus{outline:none;border-color:var(--accent)}
+.ai-clear{background:none;border:none;color:var(--muted);font-size:11.5px;cursor:pointer;margin-top:8px;padding:0}
+.ai-clear:hover{color:#c0261f}
+@media(max-width:760px){.ai-log{height:340px}.ai-msg{max-width:92%}}
+
 @media(max-width:860px){.wgrid{grid-template-columns:repeat(2,1fr)}.phase-legend{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){
   .out-grid{grid-template-columns:repeat(2,1fr)}
@@ -325,6 +357,7 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--rule);font-si
   <button data-view="course">课程并线</button>
   <button data-view="table">课程表</button>
   <button data-view="review">复盘中心</button>
+  <button data-view="ai">AI 问答</button>
 </nav>
 
 <div class="wrap">
@@ -497,6 +530,20 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--rule);font-si
   <h2 class="sec">复盘报告</h2>
   <div id="revExport"></div>
 </section>
+
+<!-- ================= 视图6：AI 问答 ================= -->
+<section id="view-ai" hidden>
+  <h2 class="sec">AI 学习问答</h2>
+  <p class="ai-note">本地知识库助手——基于本站数据与学习计划实时作答，无需联网、答案来自规划器与学习路径报告。<b>试试问「本周该做什么」</b>，它会按今天的日期算。</p>
+  <div class="ai-chips" id="aiChips"></div>
+  <div class="ai-log" id="aiLog" aria-live="polite"></div>
+  <div class="ai-bar">
+    <input id="aiInput" type="text" maxlength="120" placeholder="问点什么…（回车发送）" autocomplete="off">
+    <button id="aiSend" class="btn-pri">发送</button>
+  </div>
+</section>
+
+<button id="toTop" title="返回顶部" aria-label="返回顶部">↑</button>
 
 <footer>
   <p>动态规划表 · 合并自「课程规划对照表」与「开学第一周每日任务清单」 · 勾选与复盘保存在本机浏览器 localStorage · 与规划器六维度周表一一对应 · 可打印（Ctrl+P）</p>
@@ -877,7 +924,7 @@ tabs.forEach(function(b){
   b.addEventListener('click', function(){
     tabs.forEach(function(x){ x.classList.remove('active'); });
     b.classList.add('active');
-    ['map','week','course','table','review'].forEach(function(v){
+    ['map','week','course','table','review','ai'].forEach(function(v){
       document.getElementById('view-'+v).hidden = (v !== b.dataset.view);
     });
     window.scrollTo({top:0, behavior:'smooth'});
@@ -886,9 +933,9 @@ tabs.forEach(function(b){
 });
 (function(){
   var h = location.hash.replace('#','');
-  if(['map','week','course','table','review'].indexOf(h) >= 0){
+  if(['map','week','course','table','review','ai'].indexOf(h) >= 0){
     tabs.forEach(function(x){ x.classList.toggle('active', x.dataset.view === h); });
-    ['map','week','course','table','review'].forEach(function(v){ document.getElementById('view-'+v).hidden = (v !== h); });
+    ['map','week','course','table','review','ai'].forEach(function(v){ document.getElementById('view-'+v).hidden = (v !== h); });
   }
 })();
 
@@ -1377,6 +1424,178 @@ function renderReview(){
     else fallback();
   });
 }
+
+/* ================= AI 问答（本地知识库） ================= */
+var AI_LOG_KEY = 'dyn-ai-log-v1';
+var KB = [
+  {kw:['本周','这周','现在该','这周做','当前周'], tag:'实时计算', dyn:'weekPlan'},
+  {kw:['同步','导入','导出','备份','规划器数据','怎么导'], tag:'操作指引',
+   a:'同步是「规划器 → JSON 文件 → 本站」的 30 秒流程：<ul><li>规划器左侧「💾 数据」→ 点「导出 JSON 备份」</li><li>本站顶栏「同步」→ 选这个 JSON 文件（选完自动导入）</li><li>学期地图出现 ✓/● 标记，复盘中心自动重算</li></ul>建议每周日：规划器打卡 → 导出 → 导入 → 写三问。反向（本站→规划器）用弹窗第②区生成同步文件，规划器「🔄 同步」页导入，模式保持「合并」。<div class="ai-more">详细步骤见《导入规划器数据操作指引》，常见报错可再问我「同步失败」。</div>'},
+  {kw:['同步失败','没反应','导入失败','不是有效json','无效json','地图没变'], tag:'排障',
+   a:'依次检查三件事：① 选的文件是<b>规划器导出的 JSON</b>（不是本站自己导出的同步文件）；② 选文件后<b>不需要再点「导入」按钮</b>——选中即自动导入，只有粘贴文本才需要点按钮；③ 导入后刷新一次（Ctrl+F5）再看学期地图。仍报「不是有效 JSON」就改用选文件方式，别粘贴。'},
+  {kw:['验收','w8','w16','里程碑','阶段验收'], tag:'学期节点',
+   a:'16 周里有两次硬验收：<ul><li><b>W8（组件期收尾）</b>：重绘 Ant Design Pro 一个页面 + 按钮变体矩阵 + 组件规范——检验前半学期的组件化能力</li><li><b>W16（学期收官）</b>：完整数据列表页 + 视觉规范 v1 + 作品集双平台上线</li></ul>复盘中心的进步轨迹图上这两周有 ★ 标记。验收周的任务优先级最高，其他都可以让路。<div class="ai-more">问「本周该做什么」可看当前周的具体任务。</div>'},
+  {kw:['figma','菲加','怎么学','上手','入门'], tag:'工具 · d2',
+   a:'Figma 主线（d2 维度，W1–W16）：W1 上手与概念迁移 → W2 组件变体 → W3–4 输入/反馈组件 → W5–6 表格 → W7 表单 → W8 验收 → W9–10 图形进阶 → W11–15 设计系统（token、组件库、亮暗主题）→ W16 集成。你有前端底子，记三个对应关系就通了：<b>auto layout = flexbox，Fill = width:100%，Hug = inline-flex</b>。<div class="ai-more">卡在具体操作可问「auto layout 撑不开」。</div>'},
+  {kw:['撑不开','auto layout','autolayout','填充','fill','hug','自适应'], tag:'Figma 技巧',
+   a:'撑不开多半是「填充链断了」。规则：<b>宽度的决定权从外往内传</b>——最外层 Frame 设 Fixed（如 340），中间层全部 Fill（听父级），只有最末端的按钮/文字标签保留 Hug（听内容）。常见坑：① 子元素没设 Fill（等价于没写 width:100%）；② 嵌套结构中间某层断链——从外往内逐层检查；③ 间距是容器的属性（item gap），不是子元素的 margin。'},
+  {kw:['就业','岗位','方向','找工作','能找到','前景'], tag:'市场 · d4',
+   a:'2026 年市场分了三层：<ul><li><b>传统执行岗</b>（平面/电商美工）：4–8K，被 AI 压缩最快</li><li><b>数字界面岗</b>（B端 UI/交互）：一线起薪 10–20K，工业软件赛道 12–20K·15 薪且竞争小</li><li><b>AI 复合岗</b>：AIGC 技能 JD 同比 +320%，资深 18–30K 供不应求</li></ul>同岗位名应届价差能到 3–5 倍——分层的关键词是「设计系统」「AI 工作流」「能落地」。你的三张牌（B端UI+设计系统 / AI工作流 / 前端落地）正对溢价区。'},
+  {kw:['薪资','工资','多少钱','待遇','薪水'], tag:'市场数据',
+   a:'薪资分层数据：传统平面 4–7K（十年天花板 12–18K）；B端 UI 一线起薪 10–20K；工业软件 UI 上海 3 年+ 12–20K·15 薪；大厂校招 UI 15–17K，但同城市应届也有 52.7% 岗位只给 3–6K——「UI 设计师」这个名称已不代表一个价位，<b>能落地 + 会系统 + 用 AI 的人在一个市场，只会画图的人在另一个市场</b>。目标是进上面那层。'},
+  {kw:['书','书籍','看什么书','阅读','推荐书'], tag:'资源',
+   a:'按用处排序的 9 本：<ul><li>现在买：《写给大家看的设计书》《点石成金》《用数据讲故事》</li><li>按周配读：网格系统（W4 栅格周）、About Face 4 与界面设计模式（大二下当字典）</li><li>做设计系统时精读：《设计体系》Alla Kholmatova（W11–15 对位）</li></ul>节奏：每周固定 30 分钟（周日复盘前），16 周啃完前 4 本。'},
+  {kw:['工具','ai工具','midjourney','mj','comfyui','v0','figma make','提效'], tag:'AI · d6',
+   a:'AI 工具三档优先级：<ul><li><b>P0 现在</b>：Figma Make（文生 UI，Figma 内生免费额度）+ Midjourney $10/月（mood board、气质探索）</li><li><b>P1 大二下</b>：ComfyUI（本地可控出图）+ Firefly（Adobe 生态）</li><li><b>P2 你的独有牌</b>：v0.dev（文生 React）+ Cursor——设计出身普遍不会前端 AI，这是复合优势</li></ul>原则：AI 是草稿机不是成品机，先用它出 20 个方案再手工精修。<div class="ai-more">AI 学习三阶段路径可问「AI工作流」。</div>'},
+  {kw:['ai工作流','提示词','prompt','工作流学习','ai学习'], tag:'AI · 三阶段',
+   a:'三阶段（不动你的 16 周主线）：<ul><li><b>阶段一（大二上）</b>：每周 30 分钟「AI 时段」——MJ 提示词、Figma Make 生成后自己重画对比（最快发现功力差距的方法）</li><li><b>阶段二（大二下→暑假）</b>：ComfyUI 可控出图 + v0 把案例一稿生成前端代码对照</li><li><b>阶段三（大三）</b>：作品集加一件「AI 辅助设计流程」案例——同一页面纯手绘 vs AI 工作流的时间质量对比</li></ul>面试被问「你的 AI 工作流是什么」时，有真数据可讲。'},
+  {kw:['课程','上课','作业','课内','课表','结课'], tag:'课程并线',
+   a:'课程三档策略：<ul><li><b>直接转化</b>（字体/版式/标志VI）：作业按 B 端标准做深直接进作品集——VI 手册当设计系统文档做，对接 d2 W11–14</li><li><b>间接转化</b>（插画/摄影）：提取可迁移部分，及格+有亮点</li><li><b>低耗过关</b>（设计史/理论）：考前突击，只认真听包豪斯与瑞士主义</li></ul>核心是「一鱼多吃」：版式课自选大作业 = d3 案例一，一份调研两用。详见「课程并线」视图。'},
+  {kw:['复盘','三问','怎么复盘','回顾'], tag:'复盘方法',
+   a:'每周三问（复盘中心，答完才算完成本周复盘）：① 哪项任务实际耗时超出预估 50% 以上？为什么？② 哪件产出没做完，卡在哪一步？③ 下周最重要的 1 件事是什么？安排在哪个时段？<div class="ai-more">复盘中心还会自动算：完成率、维度短板、下周聚焦、进步轨迹（16 周柱状图）、可下载 .md 报告。连续复盘周数靠三问累计。</div>'},
+  {kw:['作品集','案例','portfolio','做什么作品'], tag:'作品集 · d3',
+   a:'三件核心案例（d3 主线）：<ul><li><b>案例一（W5–8）</b>：界面改版——选一个真实产品重设计，讲清「背景-问题-方案-取舍」</li><li><b>案例二（W9–12）</b>：B 端工具类设计——数据表格/表单流程，展示系统思维</li><li><b>案例三（W13–16）</b>：设计系统文档——30+ 组件库 + token 体系，亮暗双主题</li></ul>原则：2 件讲得清商业逻辑的案例 > 8 件练习稿。面试官问的是「为什么这么设计」。'},
+  {kw:['简历','resume','怎么写简历'], tag:'就业 · d5',
+   a:'转 UI 的简历三原则：① 顺序即优先级——作品集链接放第一屏，项目经历占 60% 版面；② 项目写「背景+动作+结果」，视觉传达的项目也要按这个公式改写；③ 简历排版本身就是第一件作品——用 Figma 做，当案例一的一部分打磨。技能清单分三层：工具 / 能力（设计系统、B端经验）/ 前端（你的差异化）。'},
+  {kw:['实习','投递','什么时候投','内推'], tag:'时间线',
+   a:'投递节奏：<ul><li><b>大二暑假（2027.6–8）</b>：投 ≥20 家实习——整个计划里就业确定性权重最高的一步，别打折</li><li><b>大三上</b>：实习攒真实项目 + 秋招预热</li><li><b>大三下</b>：秋招/春招冲刺，作品集终版</li></ul>大二上现在要做的：把每周产出存档上传作品墙（W1 起就有 6 件），期末向老师要推荐信与内推资源。'},
+  {kw:['设计系统','token','组件库','design system'], tag:'核心概念 · d2',
+   a:'设计系统三件事：<ul><li><b>Token 体系</b>：全局 token（色值/字号/间距）→ 别名 token（brand/primary）→ 组件 token（button-bg）——三层结构，改一处全局生效</li><li><b>组件变体</b>：一个组件用 property 控制尺寸/状态/主题，按钮 5 尺寸×4 状态=20 个变体一个文件</li><li><b>文档化</b>：每个组件的用法、边界、do/don\'t</li></ul>W11 起你会亲手搭一套。参考：Ant Design、TDesign、Carbon 的文档就是最好的教材。<div class="ai-more">问「书籍推荐」有对位的《设计体系》。</div>'},
+  {kw:['打卡','在哪打卡','勾选','记录进度'], tag:'分工',
+   a:'两边分工：① <b>每日勾选</b>——本站「本周执行」视图勾 28 项每日任务（W1 起实时算完成率）；② <b>每周打卡</b>——规划器里点各维度周状态（W2 起以规划器为准）；③ <b>每周日</b>——规划器导出 JSON → 本站导入 → 复盘中心自动汇总。数据都在各自浏览器的 localStorage 里，换设备前记得导出备份。'},
+  {kw:['维度','六个维度','规划器是什么','体系'], tag:'体系总览',
+   a:'六维度 16 周（96 项任务）：<ul><li><b>d1 专业技能</b>：色彩→排版→图标→栅格→暗色→视觉规范 v1</li><li><b>d2 软件工具</b>：Figma→组件→表格表单→设计系统→组件库</li><li><b>d3 作品集</b>：定位→三大案例→双平台上线</li><li><b>d4 行业接轨</b>：JD 分层词频→设计系统案例研究→薪资分层</li><li><b>d5 实践就业</b>：比赛→简历→GitHub→30 家实习线索</li><li><b>d6 AI 工作流</b>：工具地图→MJ 提示词→Figma Make→v0→AI 话术</li></ul>学期四阶段：地基（W1–4）→组件（W5–8）→系统（W9–12）→集成（W13–16）。'},
+  {kw:['时间不够','没时间','忙','崩溃','坚持不下去','太多'], tag:'执行策略',
+   a:'时间预算：课内 29h + 周计划 12h + 弹性 2h ≈ 43h/周，硬扛两套必崩，靠「一鱼多吃」合并。不够时的取舍顺序：<ul><li>保 P0（d2 组件线 + 当周验收产出），砍 d6（AI 时段可缩到 15 分钟）</li><li>期末季（W13–16）周计划降半速——课内结课大作业本身就在喂作品集</li><li>连续两周低于 60% 完成率就主动降档，别硬撑到弃坑</li></ul>执行 90%+ = 秋招第一梯队；60–70% = 能进面试拼表达；40% 以下等于没规划。'},
+  {kw:['比赛','竞赛','赛事','投赛'], tag:'实践 · d5',
+   a:'比赛三原则：① 只投能给作品集背书的（UXD Award、站酷奖、各大厂设计赛）；② 课内大作业顺手投——一次劳动两份收益；③ W6 出比赛地图，每学期最多 2 个，别为参赛打乱主线。规划器「🏅 赛事报名」页有清单，赛事信息每学期开学更新一次。'},
+  {kw:['前端','代码','html','css','写代码','工程师'], tag:'差异化 · 前端',
+   a:'前端是你的护城河（P2 优先级）：AI 能生成 UI，但判断生成结果好坏、与真实系统集成仍需懂两边的人。用法三条：① W13 用 v0 把案例一稿生成一版 React，对照你手写的版本找差距；② 简历技能栏明确写「HTML/CSS/JS + 能与前端对接 token 体系」；③ 别转码——目标是「会写代码的 B 端设计师」，不是工程师。'}
+];
+
+function aiWeekPlanAnswer(){
+  var cur = currentWeek();
+  if(cur === 0) return {tag:'实时计算', a:'还没开学（2026-09-01 起）。开学前可做：装好 Figma、注册账号、把第一周清单打印或收藏。'};
+  var d = phaseOf(cur);
+  var rows = DIM_KEYS.map(function(k){
+    var dim = DIMS[k];
+    var st = getWeekStats(cur);
+    var s = st.mode === 'tasks' ? (st.dims[k].done + '/' + st.dims[k].total) : (st.dims[k] === 'done' ? '已完成' : (st.dims[k] === 'doing' ? '进行中' : '待办'));
+    return '<li><b>' + dim.name + '</b>：' + dim.weeks[cur-1][0] + '（' + s + '）</li>';
+  }).join('');
+  var acc = (cur === 8 || cur === 16) ? '<div class="ai-more">⚠ 本周是阶段验收周——重绘/复盘类任务优先级最高，其他可以让路。</div>' : '';
+  return {tag:'实时计算 · W'+cur+' · '+d.name,
+    a:'当前是<b>第 ' + cur + ' 周（' + weekRange(cur) + '）</b>，' + d.name + '。本周六维度任务：' + '<ul>' + rows + '</ul>' + acc + '<div class="ai-more">任务状态来自本站勾选（W1）或最近一次同步导入（W2+）。「课程并线」视图有每日时段安排。</div>'};
+}
+
+function aiMatch(q){
+  var s = String(q || '').toLowerCase().trim();
+  if(!s) return null;
+  var best = null, score = 0;
+  KB.forEach(function(e){
+    var sc = 0;
+    e.kw.forEach(function(k){ if(s.indexOf(k) > -1) sc += k.length; });
+    if(sc > score){ score = sc; best = e; }
+  });
+  if(best && best.dyn === 'weekPlan') return aiWeekPlanAnswer();
+  return best;
+}
+
+function aiFallback(q){
+  return {tag:'知识库外', a:'这个问题超出了我的知识库（我覆盖：规划器使用、同步排障、六维度任务、Figma、就业市场、书籍工具、课程策略、复盘方法、作品集简历）。<br>试试这些：<ul><li>「本周该做什么」——按今天日期实时算</li><li>「Figma 怎么学」「就业方向」「书籍推荐」</li><li>「同步怎么做」「时间不够怎么办」</li></ul>学习上的具体问题也可以去规划器「📚 教程」页找每周配好的教程链接。'};
+}
+
+(function(){
+  var log = document.getElementById('aiLog');
+  if(!log) return;
+  var input = document.getElementById('aiInput');
+  var send = document.getElementById('aiSend');
+  var chipsBox = document.getElementById('aiChips');
+  var history = [];
+  try{ history = JSON.parse(localStorage.getItem(AI_LOG_KEY) || '[]'); if(!Array.isArray(history)) history = []; }catch(e){ history = []; }
+
+  var CHIPS = ['本周该做什么','同步怎么做','Figma 怎么学','就业方向','薪资水平','书籍推荐','AI 工具','时间不够怎么办','作品集','auto layout 撑不开'];
+
+  function saveLog(){ try{ localStorage.setItem(AI_LOG_KEY, JSON.stringify(history.slice(-40))); }catch(e){} }
+  function scrollBottom(){ log.scrollTop = log.scrollHeight; }
+
+  function addMsg(role, html, tag){
+    var div = document.createElement('div');
+    div.className = 'ai-msg ' + role;
+    var inner = '';
+    if(role === 'bot' && tag) inner += '<span class="ai-src">' + tag + '</span>';
+    inner += html;
+    div.innerHTML = inner;
+    log.appendChild(div);
+    scrollBottom();
+  }
+
+  function answer(q){
+    var res = aiMatch(q) || aiFallback(q);
+    var delay = 350 + Math.random() * 400;
+    var t = document.createElement('div');
+    t.className = 'ai-thinking';
+    t.innerHTML = '<i></i><i></i><i></i>';
+    log.appendChild(t);
+    scrollBottom();
+    setTimeout(function(){
+      if(t.parentNode) t.parentNode.removeChild(t);
+      addMsg('bot', res.a, res.tag);
+      history.push({r:'bot', a:res.a, t:res.tag});
+      saveLog();
+    }, delay);
+  }
+
+  function ask(q){
+    q = String(q || '').trim();
+    if(!q) return;
+    addMsg('user', q.replace(/</g,'&lt;'));
+    history.push({r:'user', a:q});
+    saveLog();
+    answer(q);
+  }
+
+  chipsBox.innerHTML = CHIPS.map(function(c){ return '<button class="ai-chip" type="button">' + c + '</button>'; }).join('');
+  chipsBox.querySelectorAll('.ai-chip').forEach(function(ch){
+    ch.addEventListener('click', function(){ ask(ch.textContent); });
+  });
+
+  send.addEventListener('click', function(){ ask(input.value); input.value = ''; input.focus(); });
+  input.addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){ ask(input.value); input.value = ''; }
+  });
+
+  if(history.length){
+    history.forEach(function(m){ addMsg(m.r, m.a, m.t); });
+    var tip = document.createElement('div');
+    tip.className = 'ai-msg bot';
+    tip.innerHTML = '以上是历史记录。继续问我，或点下方「清空对话」重来。';
+    log.appendChild(tip);
+  } else {
+    addMsg('bot', '你好 👋 我是你的学习问答助手——基于这份规划表和学习计划回答问题。<br>我会按<b>今天的日期</b>算当前周任务，也会记住咱们聊过什么。点上面的快捷问题，或直接输入。', '本地知识库');
+  }
+
+  var clearBtn = document.createElement('button');
+  clearBtn.className = 'ai-clear';
+  clearBtn.textContent = '清空对话记录';
+  clearBtn.addEventListener('click', function(){
+    history = [];
+    localStorage.removeItem(AI_LOG_KEY);
+    log.innerHTML = '';
+    addMsg('bot', '已清空。重新开始——点快捷问题或直接输入。', '本地知识库');
+  });
+  document.getElementById('view-ai').querySelector('.ai-bar').after(clearBtn);
+})();
+
+/* ================= 返回顶部 ================= */
+(function(){
+  var btn = document.getElementById('toTop');
+  if(!btn) return;
+  function onScroll(){ btn.classList.toggle('show', (window.scrollY || document.documentElement.scrollTop) > 420); }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+  btn.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
+})();
 
 /* ================= 顶栏周数 ================= */
 (function(){
