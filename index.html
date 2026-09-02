@@ -250,6 +250,47 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--rule);font-si
 .ghost{background:none;border:1px dashed var(--rule);color:var(--muted);border-radius:8px;padding:6px 12px;font-size:12.5px;cursor:pointer}
 .ghost:hover{color:var(--ink);border-color:var(--muted)}
 .sm-tip{font-size:11.5px;color:var(--muted);line-height:1.7;margin:2px 0 0}
+
+/* ===== 复盘中心 ===== */
+.rev-stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.rev-stat{background:var(--bg2);border:1px solid var(--rule);border-radius:10px;padding:10px 16px;min-width:104px}
+.rev-stat b{display:block;font-size:22px;font-weight:800}
+.rev-stat span{font-size:11px;color:var(--muted)}
+.rev-dims{display:flex;flex-direction:column;gap:7px;margin:14px 0 6px}
+.rev-dim{display:flex;align-items:center;gap:10px;font-size:12.5px}
+.rev-dim .nm{width:158px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:none}
+.rev-dim .track{flex:1;height:8px;background:#e9edf4;border-radius:99px;overflow:hidden}
+.rev-dim .fill{height:100%;border-radius:99px}
+.rev-dim .val{width:58px;text-align:right;font-weight:700;font-variant-numeric:tabular-nums;flex:none}
+.rev-ins{border-left:3px solid var(--accent);background:var(--bg2);border-radius:8px;padding:10px 14px;margin:8px 0;font-size:13px;line-height:1.7}
+.rev-ins.warn{border-left-color:#d97706}
+.rev-ins.good{border-left-color:#0a7a4f}
+.rev-nf{background:#f4f7ff;border:1px solid #dbe4fb;border-radius:10px;padding:12px 14px;margin:12px 0}
+.rev-nf b{font-size:13px}
+.rev-nf ul{margin:8px 0 0;padding-left:18px;font-size:12.5px;display:flex;flex-direction:column;gap:6px}
+.rev-nf li em{display:block;font-style:normal;color:var(--muted);font-size:11.5px;margin-top:2px}
+.rev-note{font-size:11.5px;color:var(--muted);margin:10px 0 0}
+.rev-q{background:var(--bg2);border:1px solid var(--rule);border-radius:10px;padding:14px 16px}
+.rev-q h3{font-size:14px;margin:0}
+.rev-q ol{margin:10px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:12px;font-size:13.5px;line-height:1.5}
+.rev-q textarea{width:100%;margin-top:7px;border:1px solid var(--rule);border-radius:8px;padding:9px 11px;font-size:13px;font-family:inherit;resize:vertical;box-sizing:border-box;line-height:1.6;background:#fff}
+.rev-trendsvg{width:100%;height:auto;display:block}
+.rev-hist{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+.rev-hrow{display:flex;align-items:center;gap:10px;font-size:12.5px;padding:7px 12px;background:var(--bg2);border:1px solid var(--rule);border-radius:8px}
+.rev-hrow.cur{outline:2px solid var(--accent);outline-offset:-2px}
+.rev-hrow .w{font-weight:800;width:30px;flex:none}
+.rev-hrow .rng{width:110px;color:var(--muted);font-size:11.5px;flex:none}
+.rev-hrow .bar{flex:1;height:6px;background:#e9edf4;border-radius:99px;overflow:hidden}
+.rev-hrow .bar i{display:block;height:100%;border-radius:99px}
+.rev-hrow .pct{width:46px;text-align:right;font-weight:700;font-variant-numeric:tabular-nums;flex:none}
+.rev-hrow .delta{width:46px;font-size:11px;font-weight:700;flex:none}
+.rev-hrow .delta.up{color:#0a7a4f}
+.rev-hrow .delta.dn{color:#c0261f}
+.rev-hrow .qa{width:52px;text-align:right;color:var(--muted);font-size:11.5px;flex:none}
+.rev-hrow .qa.ok{color:#0a7a4f;font-weight:700}
+.rev-actions{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 0}
+.rev-pre{background:var(--bg2);border:1px solid var(--rule);border-radius:10px;padding:14px 16px;font-size:11.5px;font-family:Consolas,monospace;overflow:auto;max-height:320px;white-space:pre-wrap;margin-top:12px;line-height:1.6}
+
 @media(max-width:860px){.wgrid{grid-template-columns:repeat(2,1fr)}.phase-legend{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){
   .out-grid{grid-template-columns:repeat(2,1fr)}
@@ -283,6 +324,7 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--rule);font-si
   <button data-view="week">本周执行<span class="bdg" id="weekBdg"></span></button>
   <button data-view="course">课程并线</button>
   <button data-view="table">课程表</button>
+  <button data-view="review">复盘中心</button>
 </nav>
 
 <div class="wrap">
@@ -441,6 +483,21 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--rule);font-si
   </div>
 </section>
 
+<!-- ================= 视图5：复盘中心 ================= -->
+<section id="view-review" hidden>
+  <h2 class="sec">本周自动复盘</h2>
+  <div id="revAuto"></div>
+
+  <h2 class="sec">复盘三问</h2>
+  <div id="revQuestions"></div>
+
+  <h2 class="sec">进步轨迹（每周完成率）</h2>
+  <div id="revTrend"></div>
+
+  <h2 class="sec">复盘报告</h2>
+  <div id="revExport"></div>
+</section>
+
 <footer>
   <p>动态规划表 · 合并自「课程规划对照表」与「开学第一周每日任务清单」 · 勾选与复盘保存在本机浏览器 localStorage · 与规划器六维度周表一一对应 · 可打印（Ctrl+P）</p>
 </footer>
@@ -473,7 +530,7 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--rule);font-si
         <div class="sm-stat" id="syncStatus"></div>
         <button class="ghost" id="syncClear">清除已导入数据（不影响本站勾选）</button>
       </div>
-      <p class="sm-tip">建议节奏：每周日在规划器里打卡完 → 导出备份 → 本站导入看全景；或反过来本站勾完 → 导出文件 → 规划器合并。两个方向都走「合并」逻辑，不会动对方的其他数据（导出前先导入一次即可保留全部周状态）。</p>
+      <p class="sm-tip">建议节奏：每周日在规划器里打卡完 → 导出备份 → 本站导入看全景，「复盘中心」随之自动汇总；或反过来本站勾完 → 导出文件 → 规划器合并。两个方向都走「合并」逻辑，不会动对方的其他数据（导出前先导入一次即可保留全部周状态）。</p>
     </div>
   </div>
 </div>
@@ -772,12 +829,9 @@ function renderWeek(){
     WEEK1_DAYS.forEach(function(day){
       h += renderDay(day, ti === (day.n-1));
     });
-    h += '<h2 class="sec">周日复盘 · 三问</h2><div class="review"><h3>写在 Day 7，各答一句实话</h3><ol>'+
-      '<li>哪项任务实际耗时超出预估 50% 以上？为什么？<textarea data-review="q1" placeholder="例如：Day 5 重绘用了 5.5h，卡在图标对齐"></textarea></li>'+
-      '<li>哪件产出没做完，卡在哪一步？<textarea data-review="q2" placeholder="例如：比赛清单只找到 2 条"></textarea></li>'+
-      '<li>课表定下来后，下周每天的可学习时段是几点到几点？<textarea data-review="q3" placeholder="例如：周一三晚 19:30–21:30"></textarea></li></ol></div>';
+    h += '<div class="wk-banner">复盘三问已移至顶栏<b>「复盘中心」</b>——那里每周自动汇总完成率、维度短板与进步轨迹，并生成可下载的复盘报告。</div>';
   } else {
-    h += '<div class="wk-banner">第一周明细已归档（28 项任务、6 件产出）——本页只显示当前周。每周打卡请在<b>视觉传达大二成长规划器</b>里进行，本表负责学期地图与课程并线总览。</div>';
+    h += '<div class="wk-banner">第一周明细已归档（28 项任务、6 件产出）——本页只显示当前周。每周打卡请在<b>视觉传达大二成长规划器</b>里进行，本表负责学期地图与课程并线总览，复盘在顶栏「复盘中心」自动汇总。</div>';
   }
   box.innerHTML = h;
 }
@@ -823,7 +877,7 @@ tabs.forEach(function(b){
   b.addEventListener('click', function(){
     tabs.forEach(function(x){ x.classList.remove('active'); });
     b.classList.add('active');
-    ['map','week','course','table'].forEach(function(v){
+    ['map','week','course','table','review'].forEach(function(v){
       document.getElementById('view-'+v).hidden = (v !== b.dataset.view);
     });
     window.scrollTo({top:0, behavior:'smooth'});
@@ -832,15 +886,16 @@ tabs.forEach(function(b){
 });
 (function(){
   var h = location.hash.replace('#','');
-  if(['map','week','course','table'].indexOf(h) >= 0){
+  if(['map','week','course','table','review'].indexOf(h) >= 0){
     tabs.forEach(function(x){ x.classList.toggle('active', x.dataset.view === h); });
-    ['map','week','course','table'].forEach(function(v){ document.getElementById('view-'+v).hidden = (v !== h); });
+    ['map','week','course','table','review'].forEach(function(v){ document.getElementById('view-'+v).hidden = (v !== h); });
   }
 })();
 
 /* ================= 状态持久化 ================= */
 var state = {};
 try{ state = JSON.parse(localStorage.getItem(KEY) || '{}'); }catch(e){ state = {}; }
+['q1','q2','q3'].forEach(function(q,i){ var nk = 'w1q'+(i+1); if(state[q] !== undefined && state[nk] === undefined) state[nk] = state[q]; });
 
 function saveState(){ localStorage.setItem(KEY, JSON.stringify(state)); }
 
@@ -905,6 +960,7 @@ document.getElementById('resetBtn').addEventListener('click', function(){
   renderWeek();
   bindTasks();
   renderCounts();
+  renderReview();
   renderSyncUI();
 });
 
@@ -944,6 +1000,7 @@ function rerenderDynamic(){
   renderWeek();
   bindTasks();
   renderCounts();
+  renderReview();
 }
 
 function importPlannerText(text){
@@ -1062,6 +1119,265 @@ function renderSyncUI(){
   });
 })();
 
+/* ================= 复盘中心 ================= */
+function revQuestionsFor(week){
+  if(week === 1) return [
+    ['哪项任务实际耗时超出预估 50% 以上？为什么？','例如：Day 5 重绘用了 5.5h，卡在图标对齐'],
+    ['哪件产出没做完，卡在哪一步？','例如：比赛清单只找到 2 条'],
+    ['课表定下来后，下周每天的可学习时段是几点到几点？','例如：周一三晚 19:30–21:30']
+  ];
+  return [
+    ['本周哪项任务实际耗时超出预估 50% 以上？为什么？','例如：组件变体矩阵原计划 2h，实际 4h，卡在属性命名'],
+    ['哪件产出没做完，卡在哪一步？','例如：暗色模式只做了导航'],
+    ['下周最重要的 1 件事是什么？安排在哪个时段做？','例如：表格组件，周六产出日 4h 全给它']
+  ];
+}
+function answeredCount(week){
+  var n = 0;
+  ['1','2','3'].forEach(function(i){ if((state['w'+week+'q'+i]||'').trim()) n++; });
+  return n;
+}
+function reviewAnswered(week){ return answeredCount(week) > 0; }
+function streakCount(){
+  var cur = currentWeek(); if(cur < 1) return 0;
+  var start = reviewAnswered(cur) ? cur : cur - 1;
+  var s = 0;
+  for(var n = start; n >= 1; n--){ if(reviewAnswered(n)) s++; else break; }
+  return s;
+}
+function plannerHasWeek(week){
+  var p = plannerData(); if(!p || !p.weeks) return false;
+  return DIM_KEYS.some(function(k){ return p.weeks[k] && p.weeks[k][week] && p.weeks[k][week].status; });
+}
+function getWeekStats(week){
+  if(week === 1){
+    var dims = {};
+    DIM_KEYS.forEach(function(k){ dims[k] = w1DimStats(k); });
+    var t = 0, d = 0;
+    WEEK1_DAYS.forEach(function(day){ day.tasks.forEach(function(x,i){ t++; if(state['w1d'+day.n+'t'+(i+1)]) d++; }); });
+    return { mode:'tasks', dims:dims, done:d, total:t };
+  }
+  var dims2 = {}, done = 0, doing = 0;
+  DIM_KEYS.forEach(function(k){
+    var st = dimWeekStatus(k, week);
+    dims2[k] = st;
+    if(st === 'done') done++; else if(st === 'doing') doing++;
+  });
+  return { mode:'planner', dims:dims2, done:done, doing:doing, total:6, synced: plannerHasWeek(week) };
+}
+function weekRate(st){
+  if(!st) return null;
+  if(st.mode === 'tasks') return st.total ? st.done/st.total : 0;
+  return (st.done + st.doing*0.5)/6;
+}
+function nextFocus(week){
+  var out = [];
+  if(week >= 16) return out;
+  var st = getWeekStats(week);
+  if(st.mode === 'tasks'){
+    var arr = DIM_KEYS.map(function(k){ return {k:k, s:st.dims[k]}; })
+      .filter(function(x){ return x.s.total > 0 && x.s.done < x.s.total; })
+      .sort(function(a,b){ return (a.s.done/a.s.total) - (b.s.done/b.s.total); });
+    arr.forEach(function(x){ out.push({dim:x.k, label:DIMS[x.k].weeks[week][0], why:'本周遗留（'+x.s.done+'/'+x.s.total+'）'}); });
+  } else {
+    DIM_KEYS.forEach(function(k){
+      var v = st.dims[k];
+      if(v !== 'done') out.push({dim:k, label:DIMS[k].weeks[week][0], why:v === 'doing' ? '本周进行中' : '本周未开始'});
+    });
+  }
+  return out.slice(0,3);
+}
+function escRev(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function buildReviewMd(week){
+  var st = getWeekStats(week);
+  var rate = weekRate(st);
+  var L = [];
+  L.push('# 第 '+week+' 周复盘 · '+weekRange(week));
+  L.push('');
+  L.push('> 生成自 大二上动态规划表（hnzzsp.github.io/sophomore-planner）· '+new Date().toLocaleString('zh-CN'));
+  L.push('');
+  L.push('## 数据总览');
+  L.push('');
+  L.push('- 完成率：'+Math.round(rate*100)+'%');
+  if(st.mode === 'tasks') L.push('- 任务完成：'+st.done+' / '+st.total);
+  else L.push('- 维度完成：'+st.done+' / 6（进行中 '+st.doing+'）');
+  L.push('');
+  L.push('## 各维度');
+  L.push('');
+  DIM_KEYS.forEach(function(k){
+    var d = DIMS[k];
+    if(st.mode === 'tasks'){ var s = st.dims[k]; L.push('- '+d.name+'：'+s.done+'/'+s.total); }
+    else { var v = st.dims[k]; L.push('- '+d.name+'：'+(v==='done'?'已完成':(v==='doing'?'进行中':'待办'))); }
+  });
+  L.push('');
+  L.push('## 复盘三问');
+  L.push('');
+  revQuestionsFor(week).forEach(function(q,i){
+    var a = (state['w'+week+'q'+(i+1)]||'').trim();
+    L.push((i+1)+'. '+q[0]);
+    L.push('   '+(a || '（未填写）'));
+    L.push('');
+  });
+  var nf = nextFocus(week);
+  L.push('## 下周聚焦（自动生成）');
+  L.push('');
+  if(nf.length) nf.forEach(function(x){ L.push('- '+DIMS[x.dim].name+'：'+x.label+'（'+x.why+'）'); });
+  else L.push(week < 16 ? '- 本周无遗留，下周按周表正常推进' : '- 学期收尾');
+  L.push('');
+  L.push('## 进步轨迹');
+  L.push('');
+  var cur = currentWeek();
+  for(var n=1;n<=cur;n++){
+    var sm = getWeekStats(n);
+    var shown = (sm.mode==='planner' && !sm.synced) ? null : weekRate(sm);
+    L.push('W'+n+'：'+(shown===null?'未同步':Math.round(shown*100)+'%')+(reviewAnswered(n)?' · 三问✓':''));
+  }
+  return L.join('\n');
+}
+function renderReview(){
+  var autoEl = document.getElementById('revAuto');
+  if(!autoEl) return;
+  var qsEl = document.getElementById('revQuestions');
+  var trendEl = document.getElementById('revTrend');
+  var exEl = document.getElementById('revExport');
+  var cur = currentWeek();
+  if(cur === 0){
+    autoEl.innerHTML = '<div class="rev-ins">开学（2026-09-01）后，这里每周自动汇总：完成率、六个维度的短板、下周聚焦、进步轨迹与可下载的复盘报告。</div>';
+    qsEl.innerHTML = ''; trendEl.innerHTML = ''; exEl.innerHTML = '';
+    return;
+  }
+  var st = getWeekStats(cur);
+  var rate = weekRate(st);
+  var streak = streakCount();
+
+  var statsHtml = '<div class="rev-stats">' +
+    '<div class="rev-stat"><b>'+Math.round(rate*100)+'%</b><span>本周完成率'+(st.mode==='planner'?'（进行中半分）':'')+'</span></div>' +
+    '<div class="rev-stat"><b>'+(st.mode==='tasks' ? st.done+'/'+st.total : st.done+'/6')+'</b><span>'+(st.mode==='tasks'?'已完成任务':'已完成维度')+'</span></div>' +
+    '<div class="rev-stat"><b>'+streak+'</b><span>连续复盘（周）</span></div>' +
+    '<div class="rev-stat"><b>'+answeredCount(cur)+'/3</b><span>三问已答</span></div></div>';
+
+  var dimsHtml = '<div class="rev-dims">';
+  DIM_KEYS.forEach(function(k){
+    var d = DIMS[k], w, txt;
+    if(st.mode === 'tasks'){ var s = st.dims[k]; w = s.total ? s.done/s.total : 0; txt = s.done+'/'+s.total; }
+    else { var v = st.dims[k]; w = v==='done'?1:(v==='doing'?0.5:0); txt = v==='done'?'已完成':(v==='doing'?'进行中':'待办'); }
+    dimsHtml += '<div class="rev-dim"><div class="nm">'+d.name+'</div><div class="track"><div class="fill" style="width:'+Math.round(w*100)+'%;background:'+d.color+'"></div></div><div class="val">'+txt+'</div></div>';
+  });
+  dimsHtml += '</div>';
+
+  var ins = [];
+  if(st.mode === 'tasks'){
+    if(st.done === st.total){
+      ins.push(['good','28/28 全清——第一周满签。提前看 W2「组件、变体与样式」教程前 1–2 集，下周抢个先手。']);
+    } else {
+      var weakList = DIM_KEYS.map(function(k){ return {k:k, s:st.dims[k]}; })
+        .filter(function(x){ return x.s.total > 0 && x.s.done < x.s.total; });
+      if(weakList.length){
+        var w0 = weakList.sort(function(a,b){ return (a.s.done/a.s.total)-(b.s.done/b.s.total); })[0];
+        ins.push(['warn','本周短板：'+DIMS[w0.k].name+'（'+w0.s.done+'/'+w0.s.total+'）——周日补漏时段优先清它。']);
+      }
+      var zeros = weakList.filter(function(x){ return x.s.done === 0; });
+      if(zeros.length) ins.push(['warn','「'+zeros.map(function(x){ return DIMS[x.k].name; }).join('」「')+'」还没动——周六 4h 产出日是本周最后的大块时间。']);
+      if(todayIdx() >= 4 && rate < 0.6) ins.push(['warn','已到后半周，完成率 '+Math.round(rate*100)+'%——周六按「先补短板、再做重绘大件」排序。']);
+    }
+  } else {
+    if(!st.synced){
+      ins.push(['warn','W'+cur+' 还没有规划器数据。流程：规划器打卡 → 数据页「导出 JSON 备份」→ 本站顶栏「同步」导入 → 此页自动更新。']);
+    } else {
+      var todoDims = DIM_KEYS.filter(function(k){ return st.dims[k] !== 'done'; });
+      if(!todoDims.length){
+        ins.push(['good','六维度全绿——本周达成。周日晚写完三问就收工，别加任务。']);
+      } else {
+        ins.push(['warn','待完成 '+todoDims.length+' 个维度：'+todoDims.map(function(k){ return DIMS[k].name; }).join('、')+'——见下方「下周聚焦」。']);
+      }
+      var doingDims = DIM_KEYS.filter(function(k){ return st.dims[k] === 'doing'; });
+      if(doingDims.length) ins.push(['','进行中：'+doingDims.map(function(k){ return DIMS[k].name; }).join('、')+'——半途任务优先清尾，再开新坑。']);
+    }
+    if(cur > 1){
+      var prev = weekRate(getWeekStats(cur-1));
+      if(prev !== null && prev > 0){
+        var dlt = Math.round((rate-prev)*100);
+        ins.push([dlt>=0?'good':'warn','较上周'+(dlt>=0?' ↑':' ↓')+Math.abs(dlt)+' 个百分点'+(dlt<-10?'——回看上周三问第 1 条，多半是同一类耗时坑。':'')]);
+      }
+    }
+  }
+  var insHtml = ins.map(function(x){ return '<div class="rev-ins '+x[0]+'">'+x[1]+'</div>'; }).join('');
+
+  var nf = nextFocus(cur);
+  var nfHtml = '';
+  if(cur < 16){
+    nfHtml = '<div class="rev-nf"><b>下周聚焦（自动生成）</b><ul>'+(nf.length
+      ? nf.map(function(x){ return '<li>'+DIMS[x.dim].name+' · '+x.label+'<em>'+x.why+'</em></li>'; }).join('')
+      : '<li>本周无遗留——下周按周表正常推进即可。</li>')+'</ul></div>';
+  }
+
+  autoEl.innerHTML = statsHtml + dimsHtml + insHtml + nfHtml +
+    '<p class="rev-note">数据口径：W1 来自本站勾选；W2 起来自最近一次「同步」导入的规划器数据'+(plannerData()?'（'+new Date(plannerData().at).toLocaleString('zh-CN')+'）':'（尚未导入）')+'。</p>';
+
+  var qs = revQuestionsFor(cur);
+  qsEl.innerHTML = '<div class="rev-q"><h3>第 '+cur+' 周复盘三问 · 答完才算完成本周复盘</h3><ol>'+qs.map(function(q,i){
+    return '<li>'+q[0]+'<textarea data-review="w'+cur+'q'+(i+1)+'" placeholder="'+q[1]+'"></textarea></li>';
+  }).join('')+'</ol></div>';
+  qsEl.querySelectorAll('textarea[data-review]').forEach(function(ta){
+    if(state[ta.dataset.review]) ta.value = state[ta.dataset.review];
+    ta.addEventListener('input', function(){ state[ta.dataset.review] = ta.value; saveState(); });
+  });
+
+  var bars = '';
+  for(var n=1;n<=16;n++){
+    var x = 10 + (n-1)*39;
+    var r = null, ghost = false;
+    if(n === 1){ r = weekRate(getWeekStats(1)); }
+    else if(n <= cur){ var s2 = getWeekStats(n); r = s2.synced ? weekRate(s2) : null; }
+    else ghost = true;
+    var h = r === null ? 3 : Math.max(3, Math.round(r*88));
+    var y = 110 - h;
+    var col = ghost ? '#e8ecf3' : (r === null ? '#dde3ec' : phaseOf(n).color);
+    bars += '<rect x="'+x+'" y="'+y+'" width="27" height="'+h+'" rx="3.5" fill="'+col+'"></rect>';
+    if(r !== null && r > 0) bars += '<text x="'+(x+13.5)+'" y="'+(y-4)+'" text-anchor="middle" font-size="8.5" font-weight="700" fill="#5a6472">'+Math.round(r*100)+'</text>';
+    if(n === 8 || n === 16) bars += '<text x="'+(x+13.5)+'" y="16" text-anchor="middle" font-size="9" fill="#b45309">★</text>';
+    bars += '<text x="'+(x+13.5)+'" y="124" text-anchor="middle" font-size="8.5" font-weight="'+(n===cur?'800':'400')+'" fill="'+(n===cur?'#2f5bd8':'#9aa4b2')+'">'+n+'</text>';
+  }
+  var rows = '', prevR = null;
+  for(var m=1;m<=cur;m++){
+    var sm = getWeekStats(m);
+    var shown = (sm.mode==='planner' && !sm.synced) ? null : weekRate(sm);
+    var delta = '';
+    if(shown !== null && prevR !== null && prevR > 0){
+      var dd = Math.round((shown-prevR)*100);
+      delta = '<span class="delta '+(dd>=0?'up':'dn')+'">'+(dd>=0?'▲':'▼')+' '+Math.abs(dd)+'</span>';
+    }
+    rows += '<div class="rev-hrow'+(m===cur?' cur':'')+'"><span class="w">W'+m+'</span><span class="rng">'+weekRange(m)+'</span><span class="bar"><i style="width:'+Math.round((shown===null?0:shown)*100)+'%;background:'+(shown===null?'#dde3ec':phaseOf(m).color)+'"></i></span><span class="pct">'+(shown===null?'未同步':Math.round(shown*100)+'%')+'</span>'+delta+'<span class="qa'+(reviewAnswered(m)?' ok':'')+'">'+(reviewAnswered(m)?'三问 ✓':'三问 —')+'</span></div>';
+    if(shown !== null) prevR = shown;
+  }
+  trendEl.innerHTML = '<svg viewBox="0 0 640 130" class="rev-trendsvg" role="img" aria-label="每周完成率趋势">'+
+    '<line x1="8" y1="110" x2="632" y2="110" stroke="#d5dbe4" stroke-width="1"></line>'+
+    '<line x1="8" y1="22" x2="632" y2="22" stroke="#d5dbe4" stroke-width="1" stroke-dasharray="3 4"></line>'+
+    '<text x="632" y="18" text-anchor="end" font-size="8" fill="#9aa4b2">100%</text>'+
+    bars+'</svg><div class="rev-hist">'+rows+'</div><p class="rev-note">空心灰条 = 未到周 / 未同步；★ = 阶段验收周（W8 页面重绘 · W16 学期复盘）。</p>';
+
+  exEl.innerHTML = '<div class="rev-actions"><button class="btn-pri" id="revMdBtn">下载复盘报告 .md</button><button class="ghost" id="revCopyBtn">复制报告全文</button></div><pre class="rev-pre">'+escRev(buildReviewMd(cur))+'</pre>';
+  document.getElementById('revMdBtn').addEventListener('click', function(){
+    var d = new Date();
+    var name = '复盘_W'+cur+'_'+d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')+'.md';
+    var blob = new Blob([buildReviewMd(cur)], { type:'text/markdown' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+  });
+  document.getElementById('revCopyBtn').addEventListener('click', function(){
+    var btn = this;
+    var done = function(){ btn.textContent = '已复制 ✓'; setTimeout(function(){ btn.textContent = '复制报告全文'; }, 2000); };
+    var fallback = function(){
+      var ta = document.createElement('textarea'); ta.value = buildReviewMd(cur); document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); done(); }catch(e){ btn.textContent = '复制失败，请手动选择文本'; }
+      ta.remove();
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(buildReviewMd(cur)).then(done, fallback); }
+    else fallback();
+  });
+}
+
 /* ================= 顶栏周数 ================= */
 (function(){
   var cur = currentWeek();
@@ -1077,6 +1393,7 @@ renderCourse();
 bindTasks();
 bindCourseCheck();
 renderCounts();
+renderReview();
 renderSyncUI();
 </script>
 </body>
