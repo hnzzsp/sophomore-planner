@@ -195,18 +195,61 @@ table.kt thead th:first-child{letter-spacing:.05em;font-size:11px;color:#8a7c62}
 .kt-slot em{display:block;font-style:normal;font-weight:400;font-size:10.5px;color:#8a7c62;margin-top:2px;font-family:var(--font-mono);letter-spacing:0}
 table.kt .kt-cell b{display:block;font-size:14px;font-weight:700;color:#3b342a;line-height:1.3}
 table.kt .kt-cell span{display:block;font-size:11px;color:#9a8a6c;margin-top:3px;letter-spacing:.03em}
-.kt-c1{background:#e9f0e6}.kt-c1 .kt-cell b{color:#2f5d50}.kt-c1 .kt-cell span{color:#6e8a77}
-.kt-c2{background:#f4ead9}.kt-c2 .kt-cell b{color:#8a5a2b}
-.kt-c3{background:#f1ede2}.kt-c3 .kt-cell b{color:#6f6a5e}
-.kt-ev{background:#fbeee4}.kt-ev .kt-cell b{color:#a03a2a}
-.kt-ev2{background:#f7e3dc}.kt-ev2 .kt-cell b{color:#8a2318}
-.kt-rest{background:#f1ede2}.kt-rest .kt-cell b{color:#a89a7e}
-.kt-free .kt-cell b{color:#a89a7e;font-weight:400;font-size:13px}
+.kt-c1{background:#e7ede4}.kt-c1 .kt-cell b{color:#3f5d4e}.kt-c1 .kt-cell span{color:#7d9182}
+.kt-c2{background:#f2e8d5}.kt-c2 .kt-cell b{color:#7a5624}.kt-c2 .kt-cell span{color:#9b7f5b}
+.kt-c3{background:#efeadf}.kt-c3 .kt-cell b{color:#6b6558}.kt-c3 .kt-cell span{color:#9c968a}
+.kt-ev{background:#f8e9dc}.kt-ev .kt-cell b{color:#94402c}.kt-ev .kt-cell span{color:#ab8272}
+.kt-ev2{background:#f3ded2}.kt-ev2 .kt-cell b{color:#832615}.kt-ev2 .kt-cell span{color:#a87c6c}
+.kt-rest{background:#efeadf}.kt-rest .kt-cell b{color:#8f8878}
+.kt-free .kt-cell b{color:#a29b8c;font-weight:400;font-size:13px}
 .kt-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:14px;font-size:12px;color:#6f6a5e;justify-content:center}
 .kt-legend i{display:inline-block;width:12px;height:12px;border:1px solid #c9b896;border-radius:2px;vertical-align:-1px;margin-right:5px}
 .kt-note{margin-top:12px;font-size:12.5px;color:#8a7c62;text-align:center;letter-spacing:.05em}
 
 footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--rule);font-size:12.5px;color:var(--muted)}
+
+/* ===== 同步弹窗与状态标记 ===== */
+.sync-hint{font-size:12.5px;color:var(--muted);margin:-4px 0 14px;line-height:1.6}
+.sync-hint .rm{margin:0 1px}
+.rm{font-weight:700;margin-left:5px;font-size:11px}
+.rm.done{color:#0a7a4f}
+.rm.doing{color:#2f5bd8}
+.wk-row.rdone{opacity:.58}
+.wk-row.rdone b{color:#0a7a4f}
+.st-bdg{font-size:11px;padding:2px 9px;border-radius:99px;font-weight:700;margin-left:6px;white-space:nowrap}
+.st-bdg.done{background:#e2f5ec;color:#0a7a4f}
+.st-bdg.doing{background:#e5edff;color:#2f5bd8}
+.tasks .dimchip{font-style:normal;vertical-align:1px;margin-left:6px}
+.sync-mask{position:fixed;inset:0;background:rgba(15,23,42,.52);z-index:80;display:flex;align-items:center;justify-content:center;padding:18px}
+.sync-mask[hidden]{display:none}
+.sync-modal{background:#fff;border-radius:14px;max-width:620px;width:100%;max-height:88vh;overflow:auto;box-shadow:0 24px 64px rgba(15,23,42,.28)}
+.sm-head{position:sticky;top:0;background:#fff;padding:14px 18px;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;z-index:2}
+.sm-head b{font-size:15.5px}
+#syncClose{border:none;background:#eef1f6;width:30px;height:30px;border-radius:8px;font-size:17px;cursor:pointer;color:var(--muted);line-height:1}
+#syncClose:hover{background:#e2e6ee;color:var(--ink)}
+.sm-body{padding:16px 18px 20px}
+.sm-intro{font-size:12.5px;color:var(--muted);line-height:1.7;margin:0 0 14px;background:#f6f8fb;border-radius:8px;padding:10px 12px}
+.sm-sec{margin-bottom:14px;padding:13px 14px;border:1px solid var(--rule);border-radius:10px}
+.sm-sec>b{display:block;font-size:13.5px;margin-bottom:7px}
+.sm-sec>p{font-size:12.5px;color:var(--muted);line-height:1.7;margin:0 0 9px}
+#syncFile{font-size:12.5px;margin-bottom:8px;width:100%}
+#syncPaste{width:100%;height:60px;border:1px solid var(--rule);border-radius:8px;padding:8px 10px;font-size:12px;font-family:Consolas,monospace;resize:vertical;margin-bottom:9px;box-sizing:border-box}
+.btn-pri{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer}
+.btn-pri:hover{opacity:.9}
+.sm-msg{font-size:12.5px;margin-top:8px;color:var(--muted);min-height:1em}
+.sm-msg.ok{color:#0a7a4f;font-weight:600}
+.sm-msg.err{color:#c0261f}
+.sm-warn{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:8px;padding:8px 10px;font-size:12px;line-height:1.6}
+.sm-stat{font-size:12.5px;color:var(--muted);margin-bottom:10px;line-height:1.6}
+.pv-wrap{font-size:12.5px;color:var(--muted);margin-bottom:10px}
+.pv-rows{display:flex;flex-wrap:wrap;gap:7px;margin-top:7px}
+.pv{font-size:12px;background:#f1f4f9;border-radius:6px;padding:4px 9px;display:inline-flex;align-items:center;gap:5px;color:var(--muted)}
+.pv i{width:8px;height:8px;border-radius:2px}
+.pv.done{background:#e2f5ec;color:#0a7a4f;font-weight:600}
+.pv.doing{background:#e5edff;color:#2f5bd8;font-weight:600}
+.ghost{background:none;border:1px dashed var(--rule);color:var(--muted);border-radius:8px;padding:6px 12px;font-size:12.5px;cursor:pointer}
+.ghost:hover{color:var(--ink);border-color:var(--muted)}
+.sm-tip{font-size:11.5px;color:var(--muted);line-height:1.7;margin:2px 0 0}
 @media(max-width:860px){.wgrid{grid-template-columns:repeat(2,1fr)}.phase-legend{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){
   .out-grid{grid-template-columns:repeat(2,1fr)}
@@ -229,6 +272,7 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--rule);font-si
       <span class="tb-week" id="weekChip">—</span>
       <span class="tb-prog" id="progTxt">0/36</span>
       <div class="tb-bar"><i id="progBar"></i></div>
+      <button class="tb-reset" id="syncBtn" title="与视觉传达大二成长规划器同步进度">同步</button>
       <button class="tb-reset" id="resetBtn" title="清空所有勾选">重置</button>
     </div>
   </div>
@@ -262,6 +306,7 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--rule);font-si
   <div class="phase-legend" id="phaseLegend"></div>
 
   <h2 class="sec">16 周 × 6 维度 全景</h2>
+  <div class="sync-hint" id="syncHint"></div>
   <div class="wgrid" id="weekGrid"></div>
 
   <div class="mile-strip">
@@ -385,11 +430,11 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--rule);font-si
         </table>
       </div>
       <div class="kt-legend">
-        <span><i style="background:#e9f0e6"></i>直接转化</span>
-        <span><i style="background:#f4ead9"></i>间接转化</span>
-        <span><i style="background:#f1ede2"></i>低耗过关</span>
-        <span><i style="background:#fbeee4"></i>周计划时段</span>
-        <span><i style="background:#f7e3dc"></i>周末大件</span>
+        <span><i style="background:#e7ede4"></i>直接转化</span>
+        <span><i style="background:#f2e8d5"></i>间接转化</span>
+        <span><i style="background:#efeadf"></i>低耗过关</span>
+        <span><i style="background:#f8e9dc"></i>周计划时段</span>
+        <span><i style="background:#f3ded2"></i>周末大件</span>
       </div>
       <div class="kt-note">占位课表 · 真实课表到手后按「课程并线」视图规则逐格校正 · 晚间周计划任务每周在「本周执行」视图更新</div>
     </div>
@@ -400,6 +445,37 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--rule);font-si
   <p>动态规划表 · 合并自「课程规划对照表」与「开学第一周每日任务清单」 · 勾选与复盘保存在本机浏览器 localStorage · 与规划器六维度周表一一对应 · 可打印（Ctrl+P）</p>
 </footer>
 
+</div>
+
+<!-- ================= 同步弹窗 ================= -->
+<div class="sync-mask" id="syncMask" hidden>
+  <div class="sync-modal">
+    <div class="sm-head"><b>与规划器同步进度</b><button id="syncClose" title="关闭">×</button></div>
+    <div class="sm-body">
+      <p class="sm-intro">本站与「视觉传达大二成长规划器」是两个独立页面，进度不能自动互通——通过 JSON 文件桥接，30 秒一次往返。</p>
+      <div class="sm-sec">
+        <b>① 从规划器导入（把周进度读到本站）</b>
+        <p>规划器 → 数据页 → <b>「导出 JSON 备份」</b>（或同步区的「导出同步文件」）→ 把下载的 JSON 文件选到下面，或直接粘贴内容 → 学期地图出现 <span class="rm done">✓</span> 完成标记，本周卡片显示状态徽章。</p>
+        <input type="file" id="syncFile" accept=".json,application/json">
+        <textarea id="syncPaste" placeholder="或把 JSON 全文粘贴到这里…"></textarea>
+        <button class="btn-pri" id="syncImportBtn">导入</button>
+        <div class="sm-msg" id="syncImportMsg"></div>
+      </div>
+      <div class="sm-sec">
+        <b>② 导出到规划器（把勾选写回周进度）</b>
+        <p>把本站第 1 周勾选换算成 6 个维度的周状态，生成规划器可识别的同步文件 → 规划器 → 数据页 → 同步区 → <b>「导入同步文件」</b>（模式保持「合并」）→ 选这个文件。</p>
+        <div class="pv-wrap" id="syncExportPreview"></div>
+        <button class="btn-pri" id="syncExportBtn">生成并下载同步文件</button>
+        <p class="sm-warn" id="syncWarn">尚未导入规划器数据：导出的文件只含第 1 周状态。若规划器里已记录其他周的进度，请先做①再导出，否则那些进度会被覆盖。</p>
+      </div>
+      <div class="sm-sec">
+        <b>③ 同步状态</b>
+        <div class="sm-stat" id="syncStatus"></div>
+        <button class="ghost" id="syncClear">清除已导入数据（不影响本站勾选）</button>
+      </div>
+      <p class="sm-tip">建议节奏：每周日在规划器里打卡完 → 导出备份 → 本站导入看全景；或反过来本站勾完 → 导出文件 → 规划器合并。两个方向都走「合并」逻辑，不会动对方的其他数据（导出前先导入一次即可保留全部周状态）。</p>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -528,55 +604,55 @@ var WEEK1_DAYS = [
   {n:1,date:'9月1日 · 周二',title:'启动日：规划器就绪 + Figma 开环境',sub:'开学第一天，只做两件事：让规划器跑起来、让 Figma 能用',dur:'≈1.5h',color:'#3370ff',
    tasks:[
     ['规划器开工设置（10min）','打开视觉传达大二成长规划器 → 顶部「开学日」设为 <mark class="key">2026-09-01</mark> → 确认阶段为学期 16 周模式 → 概览页过一遍本周 6 个维度任务。'],
-    ['注册 Figma（10min）','figma.com 免费注册，邮箱即可。浏览器直接用，学生免费档完全够。'],
-    ['认识界面三个区（30min）','左 = 图层/页面树，中 = 画布，右 = 属性面板。先记 5 个快捷键：<span class="km">F</span> 画板 · <span class="km">R</span> 矩形 · <span class="km">O</span> 椭圆 · <span class="km">T</span> 文字 · <span class="km">V</span> 移动。'],
-    ['画第一张画板（40min）','新建设计文件 → <span class="km">F</span> 画 375×812 手机画板 → 手机里截一张 App 设置页拖进来 → 用 <span class="km">T</span> 描着打一遍页内标题，感受真实字号。']
+    ['注册 Figma（10min）','figma.com 免费注册，邮箱即可。浏览器直接用，学生免费档完全够。','d2'],
+    ['认识界面三个区（30min）','左 = 图层/页面树，中 = 画布，右 = 属性面板。先记 5 个快捷键：<span class="km">F</span> 画板 · <span class="km">R</span> 矩形 · <span class="km">O</span> 椭圆 · <span class="km">T</span> 文字 · <span class="km">V</span> 移动。','d2'],
+    ['画第一张画板（40min）','新建设计文件 → <span class="km">F</span> 画 375×812 手机画板 → 手机里截一张 App 设置页拖进来 → 用 <span class="km">T</span> 描着打一遍页内标题，感受真实字号。','d2']
    ],
    pit:'别急着装插件、学高级功能。第一周只打通「画板 / 形状 / 文字 / auto layout」四件事。'},
   {n:2,date:'9月2日 · 周三',title:'Figma 概念迁移：auto layout = flexbox',sub:'你会写 CSS，学这个是降维打击——把 Web 概念一对一搬进 Figma',dur:'≈2h',color:'#15c2a6',
    tasks:[
-    ['钢笔工具（30min）','按 <span class="km">P</span>，画三样东西：搜索图标轮廓、平滑曲线、圆角卡片。重点练锚点两侧「角度把手」的控制。'],
-    ['布尔运算（20min）','选中两个形状试 Union / Subtract / Intersect / Exclude，拼 1 个组合图标。'],
-    ['auto layout 对照 flexbox（40min）','按 <span class="km">Shift+A</span>：先做一行「图标+文字」（水平、gap 8），再做一列「标题+描述」（垂直、gap 4）。对照记忆：gap→gap、padding→padding、direction→flex-direction、align→align-items。'],
-    ['嵌套实战：画一张卡片（30min）','外层垂直 auto layout（padding 16）内放「头像+名字」水平行（gap 12）+ 一段简介。故意改长文字，看布局<mark class="key">自动撑开不用重排</mark>。']
+    ['钢笔工具（30min）','按 <span class="km">P</span>，画三样东西：搜索图标轮廓、平滑曲线、圆角卡片。重点练锚点两侧「角度把手」的控制。','d2'],
+    ['布尔运算（20min）','选中两个形状试 Union / Subtract / Intersect / Exclude，拼 1 个组合图标。','d2'],
+    ['auto layout 对照 flexbox（40min）','按 <span class="km">Shift+A</span>：先做一行「图标+文字」（水平、gap 8），再做一列「标题+描述」（垂直、gap 4）。对照记忆：gap→gap、padding→padding、direction→flex-direction、align→align-items。','d2'],
+    ['嵌套实战：画一张卡片（30min）','外层垂直 auto layout（padding 16）内放「头像+名字」水平行（gap 12）+ 一段简介。故意改长文字，看布局<mark class="key">自动撑开不用重排</mark>。','d2']
    ],
    out:'Figma 基础练习文件（含 4 组练习），存进练习专用文件',
    tut:['https://www.bilibili.com/video/BV1n3iMByEug','https://www.bilibili.com/video/BV1qQ4y167Vd'],
    pit:'不用 auto layout 直接拖坐标，改一版重排一次——从今天起禁止手动定位。'},
   {n:3,date:'9月3日 · 周四',title:'UI 色彩系统（上）：主色与中性色',sub:'B端界面的地基是色板——今天搭出 60%',dur:'≈2h',color:'#5b6cff',
    tasks:[
-    ['定主色（30min）','B 端选蓝 / 青 / 紫系最安全。HSL 三条约束：<mark class="key">饱和度 ≤ 80%、明度 40–55%</mark>。定 1 个主色，并写一句话说明为什么选它。'],
-    ['中性色 9–10 阶（50min）','从近黑（≈ #1F2329）拉到近白（≈ #F5F6F8），共 9–10 阶，相邻阶明度差尽量均匀。深蓝灰比纯灰高级；结构参考 Ant Design。'],
-    ['标注用途（40min）','每阶写清用途：900/800 大标题 · 700 正文 · 500 辅助 · 400 图标 · 300 边框 · 200 分割线 · 100 禁用/页面底 · 50 卡片背景。']
+    ['定主色（30min）','B 端选蓝 / 青 / 紫系最安全。HSL 三条约束：<mark class="key">饱和度 ≤ 80%、明度 40–55%</mark>。定 1 个主色，并写一句话说明为什么选它。','d1'],
+    ['中性色 9–10 阶（50min）','从近黑（≈ #1F2329）拉到近白（≈ #F5F6F8），共 9–10 阶，相邻阶明度差尽量均匀。深蓝灰比纯灰高级；结构参考 Ant Design。','d1'],
+    ['标注用途（40min）','每阶写清用途：900/800 大标题 · 700 正文 · 500 辅助 · 400 图标 · 300 边框 · 200 分割线 · 100 禁用/页面底 · 50 卡片背景。','d1']
    ],
    out:'色板表完成 60%（主色 + 中性色阶 + 用途标注），明天收尾交件',
    pit:'中性色带明显色偏，整屏界面会显脏。眯眼或离远看整体，灰得「干净」才算过关。'},
   {n:4,date:'9月4日 · 周五',title:'UI 色彩系统（下）：功能色 + 对比度自检',sub:'今天结束时，你手里有第一件能进作品墙的规范件',dur:'≈2h',color:'#5b6cff',
    tasks:[
-    ['功能色四件套（30min）','成功绿、警告橙、危险红、信息蓝各定一档；顺手做 hover 加深一档。'],
-    ['对比度自检（40min）','WebAIM Contrast Checker 或 Figma 插件 Contrast。硬规则：<mark class="key">正文 ≥ 4.5:1，18px 以上大字 ≥ 3:1</mark>。不达标的色阶现场调整。'],
-    ['整理成「B端色板表」（50min）','Figma 里一页排完：色块 + HEX 值 + 用途 + 对比度数值。用 auto layout 排表格（顺便复习 Day 2）。']
+    ['功能色四件套（30min）','成功绿、警告橙、危险红、信息蓝各定一档；顺手做 hover 加深一档。','d1'],
+    ['对比度自检（40min）','WebAIM Contrast Checker 或 Figma 插件 Contrast。硬规则：<mark class="key">正文 ≥ 4.5:1，18px 以上大字 ≥ 3:1</mark>。不达标的色阶现场调整。','d1'],
+    ['整理成「B端色板表」（50min）','Figma 里一页排完：色块 + HEX 值 + 用途 + 对比度数值。用 auto layout 排表格（顺便复习 Day 2）。','d1']
    ],
    out:'产出① 交付：B端色板表 1 张——维度1 第 1 周验收件，存档 + 传规划器作品墙',
    pit:'别跳过对比度直接交。「色板过不过对比度这关」是面试官 30 秒内判断你专不专业的地方。'},
   {n:5,date:'9月5日 · 周六',title:'重绘日：App 设置页（本周大件）',sub:'把前三天的 Figma + 色板功夫合成一张完整的重绘图',dur:'≈4h',color:'#15c2a6',
    tasks:[
-    ['选重绘对象（15min）','挑一个真实 App 的「设置」页：推荐微信、网易云音乐或 iOS 设置（分组结构清晰）。只画其中 2–3 个分组，别贪整页。'],
-    ['参考图导入（15min）','截图拖入 Figma，右键 Lock 锁定置底，当底图描。'],
-    ['骨架重绘，只搭结构（90min）','设置页 = 多个分组列表；每组 = 垂直 auto layout；每行 = 「图标 + 标题 + 右侧值/箭头」水平行。全部 auto layout 搭建，间距取 <mark class="key">8 的倍数</mark>，禁手拖坐标。'],
-    ['细节与像素级对齐（60min）','勾选 Snap to pixel grid；字号统一；图标用 <span class="km">O</span>/<span class="km">R</span> 拼或钢笔勾；行高全表一致；颜色用 Day 3 色板里的色。'],
-    ['自查 5 项（30min）','① 每行图标垂直居中 ② 行高一致 ③ 组间距 &gt; 组内行距 ④ 图标与文字间距统一 ⑤ 和原截图逐区对比，找出自己 5 处偏差并修正。'],
-    ['存档（30min）','导出「原截图 + 重绘图」前后对比图，存作品文件夹，传规划器作品墙。']
+    ['选重绘对象（15min）','挑一个真实 App 的「设置」页：推荐微信、网易云音乐或 iOS 设置（分组结构清晰）。只画其中 2–3 个分组，别贪整页。','d2'],
+    ['参考图导入（15min）','截图拖入 Figma，右键 Lock 锁定置底，当底图描。','d2'],
+    ['骨架重绘，只搭结构（90min）','设置页 = 多个分组列表；每组 = 垂直 auto layout；每行 = 「图标 + 标题 + 右侧值/箭头」水平行。全部 auto layout 搭建，间距取 <mark class="key">8 的倍数</mark>，禁手拖坐标。','d2'],
+    ['细节与像素级对齐（60min）','勾选 Snap to pixel grid；字号统一；图标用 <span class="km">O</span>/<span class="km">R</span> 拼或钢笔勾；行高全表一致；颜色用 Day 3 色板里的色。','d2'],
+    ['自查 5 项（30min）','① 每行图标垂直居中 ② 行高一致 ③ 组间距 &gt; 组内行距 ④ 图标与文字间距统一 ⑤ 和原截图逐区对比，找出自己 5 处偏差并修正。','d2'],
+    ['存档（30min）','导出「原截图 + 重绘图」前后对比图，存作品文件夹，传规划器作品墙。','d2']
    ],
    out:'产出② 交付：重绘 App 设置页 1 张（像素级对齐）——维度2 第 1 周验收件',
    tut:['https://www.bilibili.com/video/BV19TDGYWEp7'],
    pit:'「看着差不多」就过是临摹大忌。放大到 800% 和原图对比像素，逼自己对齐。'},
   {n:6,date:'9月6日 · 周日',title:'认知日：岗位地图 + 比赛 + 作品集 + AI 启动',sub:'不动手的轻任务，四个维度一次清完',dur:'≈3.5h',color:'#9b5de5',
    tasks:[
-    ['B端岗位地图（50min · 维度4）','四类赛道各找 2 家代表公司 + 1 个岗位名：SaaS 办公协同、政企系统、工业软件、中后台。注明城市，整理成一页「岗位地图」。'],
-    ['可投比赛清单（50min · 维度5）','搜 UI / 交互类比赛：大广赛、学院奖、站酷设计大赛、UXD Award 等。每条记四项：主办方、级别、报名时间、deadline。凑满 ≥ 3 条。'],
-    ['作品集定位 + 双平台注册（80min · 维度3）','定结构：封面 → 案例×N → 关于我。注册站酷 + Behance，<mark class="key">把 Day 4 的色板表今天就传上去</mark>当第一件存货。'],
-    ['AI 工作流启动（30min · 维度6）','注册 <mark class="key">Midjourney</mark>（走 Discord）/ <mark class="key">v0.dev</mark>（GitHub 登录）；写使用原则：<mark class="key">AI 是草稿机，不是成品机</mark>。顺手用 MJ 出 2 张图感受提示词。']
+    ['B端岗位地图（50min · 维度4）','四类赛道各找 2 家代表公司 + 1 个岗位名：SaaS 办公协同、政企系统、工业软件、中后台。注明城市，整理成一页「岗位地图」。','d4'],
+    ['可投比赛清单（50min · 维度5）','搜 UI / 交互类比赛：大广赛、学院奖、站酷设计大赛、UXD Award 等。每条记四项：主办方、级别、报名时间、deadline。凑满 ≥ 3 条。','d5'],
+    ['作品集定位 + 双平台注册（80min · 维度3）','定结构：封面 → 案例×N → 关于我。注册站酷 + Behance，<mark class="key">把 Day 4 的色板表今天就传上去</mark>当第一件存货。','d3'],
+    ['AI 工作流启动（30min · 维度6）','注册 <mark class="key">Midjourney</mark>（走 Discord）/ <mark class="key">v0.dev</mark>（GitHub 登录）；写使用原则：<mark class="key">AI 是草稿机，不是成品机</mark>。顺手用 MJ 出 2 张图感受提示词。','d6']
    ],
    out:'产出③④⑤⑥ 交付：作品集结构清单+双账号（d3）· 岗位地图（d4）· 比赛清单≥3（d5）· AI 账号+原则笔记（d6）',
    tut:['https://m.zcool.com.cn/article/ZMTcwNDQxNg==.html'],
@@ -649,7 +725,9 @@ function renderMap(){
     var rows = '';
     ['d1','d2','d3','d4','d5','d6'].forEach(function(k){
       var d = DIMS[k];
-      rows += '<div class="wk-row"><i style="background:'+d.color+'"></i><b>'+d.name+'</b> '+d.weeks[n-1][0]+'</div>';
+      var st = (n === 1) ? w1DimStatus(k) : dimWeekStatus(k, n);
+      var mark = (st === 'done') ? '<span class="rm done">✓</span>' : (st === 'doing') ? '<span class="rm doing">●</span>' : '';
+      rows += '<div class="wk-row'+(st === 'done' ? ' rdone' : '')+'"><i style="background:'+d.color+'"></i><b>'+d.name+'</b> '+d.weeks[n-1][0]+mark+'</div>';
     });
     html += '<div class="'+cls+'" style="--pc:'+p.color+'">'+chips+
       '<div class="wk-head"><b>W'+n+'</b><span>'+weekRange(n)+'</span></div>'+
@@ -677,7 +755,9 @@ function renderWeek(){
 
   ['d1','d2','d3','d4','d5','d6'].forEach(function(k){
     var d = DIMS[k]; var w = d.weeks[cur-1];
-    h += '<div class="dimcard" style="--dc:'+d.color+'"><h4><span class="dc">'+d.name+'</span>'+w[0]+'</h4>'+
+    var st = (cur === 1) ? w1DimStatus(k) : dimWeekStatus(k, cur);
+    var bdg = (st === 'done') ? '<span class="st-bdg done">已完成</span>' : (st === 'doing') ? '<span class="st-bdg doing">进行中</span>' : '';
+    h += '<div class="dimcard" style="--dc:'+d.color+'"><h4><span class="dc">'+d.name+'</span>'+w[0]+bdg+'</h4>'+
          '<p>'+w[1]+'</p><div class="dy-out"><b>验收产出：</b>'+w[2]+'</div></div>';
   });
 
@@ -709,7 +789,8 @@ function renderDay(day, isToday){
     '<div class="dd-meta"><span class="dur">'+day.dur+'</span><span class="day-count" data-daydone>0/'+day.tasks.length+'</span></div></div>'+
     '<ol class="tasks">';
   day.tasks.forEach(function(t,i){
-    h += '<li data-id="w1d'+day.n+'t'+(i+1)+'"><input type="checkbox"><span class="cb"></span><span class="tt"><b>'+t[0]+'</b><em>'+t[1]+'</em></span></li>';
+    var chip = t[2] ? '<i class="dimchip" style="background:var(--'+t[2]+')" title="对接规划器'+t[2]+'">'+t[2]+'</i>' : '';
+    h += '<li data-id="w1d'+day.n+'t'+(i+1)+'"><input type="checkbox"><span class="cb"></span><span class="tt"><b>'+t[0]+chip+'</b><em>'+t[1]+'</em></span></li>';
   });
   h += '</ol>';
   if(day.out) h += '<div class="out"><b>今日产出：</b>'+day.out+'</div>';
@@ -817,17 +898,169 @@ function renderCounts(){
 }
 
 document.getElementById('resetBtn').addEventListener('click', function(){
-  if(!confirm('清空所有勾选与复盘内容？')) return;
+  if(!confirm('清空所有勾选、复盘内容与已导入的规划器进度？')) return;
   state = {};
   localStorage.removeItem(KEY);
-  document.querySelectorAll('.tasks input[type=checkbox], #courseCheck input[type=checkbox]').forEach(function(cb){
-    cb.checked = false;
-    if(cb.closest('li')) cb.closest('li').classList.remove('done');
-  });
-  document.querySelectorAll('.tasks li.done').forEach(function(li){ li.classList.remove('done'); });
-  document.querySelectorAll('textarea[data-review]').forEach(function(ta){ ta.value = ''; });
+  renderMap();
+  renderWeek();
+  bindTasks();
   renderCounts();
+  renderSyncUI();
 });
+
+/* ================= 规划器进度同步 ================= */
+var SYNC_KEY = '_planner';
+var DIM_KEYS = ['d1','d2','d3','d4','d5','d6'];
+
+function plannerData(){ return state[SYNC_KEY] || null; }
+
+function dimWeekStatus(dim, week){
+  var p = plannerData();
+  if(!p || !p.weeks || !p.weeks[dim] || !p.weeks[dim][week]) return '';
+  var s = p.weeks[dim][week].status;
+  return (s === 'done' || s === 'doing') ? s : '';
+}
+
+function w1DimStats(dim){
+  var total = 0, done = 0;
+  WEEK1_DAYS.forEach(function(day){
+    day.tasks.forEach(function(t,i){
+      if(t[2] === dim){ total++; if(state['w1d'+day.n+'t'+(i+1)]) done++; }
+    });
+  });
+  return { total: total, done: done };
+}
+
+function w1DimStatus(dim){
+  var s = w1DimStats(dim);
+  if(!s.total) return '';
+  if(s.done === s.total) return 'done';
+  if(s.done > 0) return 'doing';
+  return '';
+}
+
+function rerenderDynamic(){
+  renderMap();
+  renderWeek();
+  bindTasks();
+  renderCounts();
+}
+
+function importPlannerText(text){
+  var p;
+  try{ p = JSON.parse(text); }catch(e){ throw new Error('内容不是有效 JSON'); }
+  var weeks = null;
+  if(p && p._app === 'vd-plan-sync' && p.state && p.state.weeks) weeks = p.state.weeks;
+  else if(p && p.weeks && typeof p.weeks === 'object') weeks = p.weeks;
+  if(!weeks) throw new Error('未找到周进度数据——请用规划器 数据页 的「导出 JSON 备份」或「导出同步文件」');
+  state[SYNC_KEY] = { weeks: weeks, at: new Date().toISOString() };
+  saveState();
+  rerenderDynamic();
+  return true;
+}
+
+function exportPlannerSync(){
+  var p = plannerData();
+  var base = (p && p.weeks) ? JSON.parse(JSON.stringify(p.weeks)) : {};
+  DIM_KEYS.forEach(function(dim){
+    var st = w1DimStatus(dim);
+    if(st){
+      base[dim] = base[dim] || {};
+      base[dim]['1'] = { status: st, note: '自动态规划表同步 · ' + new Date().toLocaleDateString('zh-CN') };
+    }
+  });
+  var payload = { _app: 'vd-plan-sync', state: { weeks: base } };
+  var d = new Date();
+  var name = 'vd_plan_sync_' + d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0') + '.json';
+  var blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+function renderSyncUI(){
+  var p = plannerData();
+  var stat = document.getElementById('syncStatus');
+  if(stat){
+    if(p){
+      var cnt = 0, doneCnt = 0;
+      DIM_KEYS.forEach(function(k){
+        var wk = p.weeks[k] || {};
+        Object.keys(wk).forEach(function(w){
+          cnt++;
+          if(wk[w] && wk[w].status === 'done') doneCnt++;
+        });
+      });
+      stat.innerHTML = '已导入 · ' + new Date(p.at).toLocaleString('zh-CN') + '<br>共 ' + cnt + ' 条周状态（已完成 ' + doneCnt + ' 条）';
+    } else {
+      stat.textContent = '未导入——本站目前只显示自己勾选的第 1 周进度。';
+    }
+  }
+  var warn = document.getElementById('syncWarn');
+  if(warn) warn.style.display = p ? 'none' : 'block';
+  var pv = document.getElementById('syncExportPreview');
+  if(pv){
+    var rows = DIM_KEYS.map(function(dim){
+      var s = w1DimStats(dim);
+      var st = w1DimStatus(dim);
+      var label = (st === 'done') ? '已完成' : (st === 'doing') ? '进行中' : '待办';
+      return '<span class="pv '+(st||'')+'"><i style="background:var(--'+dim+')"></i>'+dim+' '+label+'（'+s.done+'/'+s.total+' 项）</span>';
+    }).join('');
+    pv.innerHTML = '第 1 周将写入规划器：<div class="pv-rows">'+rows+'</div>';
+  }
+  var hint = document.getElementById('syncHint');
+  if(hint){
+    hint.innerHTML = p
+      ? '已同步规划器进度（'+new Date(p.at).toLocaleString('zh-CN')+'）· <span class="rm done">✓</span> 已完成 · <span class="rm doing">●</span> 进行中 · 第 1 周状态由本站勾选实时计算'
+      : '未导入规划器进度 · 点顶栏<b>「同步」</b>可从规划器导入周进度（W2 起的打卡在规划器里做，本站看全景）';
+  }
+}
+
+(function(){
+  var mask = document.getElementById('syncMask');
+  document.getElementById('syncBtn').addEventListener('click', function(){
+    renderSyncUI();
+    mask.hidden = false;
+  });
+  document.getElementById('syncClose').addEventListener('click', function(){ mask.hidden = true; });
+  mask.addEventListener('click', function(e){ if(e.target === mask) mask.hidden = true; });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') mask.hidden = true; });
+
+  var msg = document.getElementById('syncImportMsg');
+  function show(ok, text){ msg.textContent = text; msg.className = 'sm-msg ' + (ok ? 'ok' : 'err'); }
+  function doImport(text, clean){
+    try{
+      importPlannerText(text);
+      show(true, '导入成功 ✓ 学期地图与本周视图已刷新');
+      if(clean) document.getElementById('syncPaste').value = '';
+    }catch(e){
+      show(false, '导入失败：' + e.message);
+    }
+  }
+  document.getElementById('syncFile').addEventListener('change', function(){
+    var f = this.files[0]; if(!f) return;
+    var self = this;
+    var r = new FileReader();
+    r.onload = function(){ doImport(r.result, false); self.value = ''; };
+    r.readAsText(f);
+  });
+  document.getElementById('syncImportBtn').addEventListener('click', function(){
+    var t = document.getElementById('syncPaste').value.trim();
+    if(!t){ show(false, '请先选择文件或粘贴 JSON 内容'); return; }
+    doImport(t, true);
+  });
+  document.getElementById('syncExportBtn').addEventListener('click', function(){ renderSyncUI(); exportPlannerSync(); });
+  document.getElementById('syncClear').addEventListener('click', function(){
+    if(!confirm('清除已导入的规划器进度？（不影响本站勾选）')) return;
+    delete state[SYNC_KEY];
+    saveState();
+    rerenderDynamic();
+    renderSyncUI();
+  });
+})();
 
 /* ================= 顶栏周数 ================= */
 (function(){
@@ -844,6 +1077,7 @@ renderCourse();
 bindTasks();
 bindCourseCheck();
 renderCounts();
+renderSyncUI();
 </script>
 </body>
 </html>
